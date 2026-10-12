@@ -242,10 +242,10 @@ export function Match() {
         {budgetMiss && <p className="notice"><strong><T k="match.nofit.budget.title" /></strong> <T k="match.nofit.budget.body" p={{ gap: { calc: budgetMiss.gap } }} /></p>}
         {rec.noFit?.kind === 'aboveRange' && <p className="notice"><T k="match.above" /></p>}
         <CarHead model={pick.model} variant={pick.variant} tag={<T k="match.at" p={{ channel: copyOf(lang, `ch.${pick.model.channel}`) }} />} />
+        {primary && (<><h2><T k="match.why" /></h2><Reasons scored={primary} /></>)}
         {crossChannel && <p className="cross" data-testid="cross"><T k="match.cross" p={{ channel: copyOf(lang, `ch.${pick.model.channel}`) }} /> <Proposed /></p>}
       </div>
       <div className="reach">
-        {primary && (<><h2><T k="match.why" /></h2><Reasons scored={primary} /></>)}
         <h2><T k="match.rival.title" /></h2>
         {rec.rivalNotes.length === 0 && <p className="note"><T k="match.rival.none" /></p>}
         <ul className="rivalnotes">

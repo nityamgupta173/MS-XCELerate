@@ -47,7 +47,7 @@ export default function About() {
                 <tbody>
                   {facts.map((f) => (
                     <tr key={f.id}>
-                      <th scope="row">{f.label}<br /><code data-ui>{f.id}</code></th>
+                      <th scope="row" data-ui>{f.label}<br /><code>{f.id}</code></th>
                       <td>{f.value === null ? <Verify what={f.label} id={f.id} /> : <Fact id={f.id} />}</td>
                       <td data-ui>{f.url ? <a href={f.url} target="_blank" rel="noreferrer">{f.source}</a> : `${f.source} · ${f.doc}`} · {f.retrieved}</td>
                       <td><T k={`pop.status.${f.status}`} /></td>

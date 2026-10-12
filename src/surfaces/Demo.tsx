@@ -196,8 +196,8 @@ export default function Demo() {
             </div>
           </section>
           <section className="de-side" aria-label="Staff views">
-            <div className="de-label" role="tablist">
-              {(['tablet', 'council'] as Tab[]).map((t) => <button key={t} type="button" role="tab" aria-selected={tab === t} className={`mini${tab === t ? ' is-on' : ''}`} onClick={() => setTab(t)} data-testid={`tab-${t}`}><T k={`x.de.tab.${t}`} /></button>)}
+            <div className="de-label">
+              {(['tablet', 'council'] as Tab[]).map((t) => <button key={t} type="button" aria-pressed={tab === t} className={`mini${tab === t ? ' is-on' : ''}`} onClick={() => setTab(t)} data-testid={`tab-${t}`}><T k={`x.de.tab.${t}`} /></button>)}
               <a href={tab === 'tablet' ? '/expert' : '/council'} target="_blank" rel="noreferrer"><T k="x.de.open" /></a>
             </div>
             <div className={`bezel bezel-${tab}`}>

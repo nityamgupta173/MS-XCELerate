@@ -458,9 +458,6 @@
  {
   "id": "nexon.brezza.safety",
   "topic": "safety",
-  "models": [
-   "brz"
-  ],
   "rivals": [
    "nx"
   ],

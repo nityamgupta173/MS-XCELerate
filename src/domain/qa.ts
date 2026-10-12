@@ -74,11 +74,10 @@ export function suggestions(ctx: QaContext, lang: Lang, limit = 6): Array<{ id: 
     const rivalOk = !i.rivals?.length || (ctx.rivalId ? i.rivals.includes(ctx.rivalId) : false);
     return modelOk && rivalOk ? 2 : -1;
   };
-  return chips
-    .map((i) => ({ i, s: score(i) }))
-    .filter((x) => x.s > 0)
-    .sort((a, b) => b.s - a.s)
-    .slice(0, limit)
-    .map(({ i }) => ({ id: i.id, q: i.q[lang][0]! }));
+  const ranked = chips.map((i) => ({ i, s: score(i) })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s).map((x) => x.i);
+  // The last chip is always the price question, so the buyer can see why the kiosk will not quote offers.
+  const price = byId.get('price.offers');
+  const top = ranked.filter((i) => i.id !== 'price.offers').slice(0, price ? limit - 1 : limit);
+  return [...top, ...(price ? [price] : [])].map((i) => ({ id: i.id, q: i.q[lang][0]! }));
 }
 export const intentById = (id: string) => byId.get(id) ?? null;

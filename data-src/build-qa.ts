@@ -101,7 +101,7 @@ I('airbags', 'safety', {},
   ['इसमें कितने एयरबैग हैं?', 'airbag kitne hai', 'क्या एयरबैग स्टैंडर्ड हैं', 'kitne airbags milte hai', 'एयरबैग की संख्या'],
   'The {c:pickName} has {c:pickAirbags}. If you see a different count elsewhere, check which variant and which year it describes.',
   '{c:pickName} में {c:pickAirbags} हैं। अगर कहीं और अलग संख्या दिखे, तो देख लें कि वह किस वेरिएंट और किस साल की बात है।');
-I('nexon.brezza.safety', 'safety', { models: ['brz'], rivals: ['nx'], chip: true },
+I('nexon.brezza.safety', 'safety', { rivals: ['nx'], chip: true },
   ['Is the Nexon safer than the Brezza?', 'nexon vs brezza safety', 'which is safer nexon or brezza', 'brezza safety rating vs nexon', 'tata is safer than maruti'],
   ['क्या Nexon, Brezza से ज़्यादा सुरक्षित है?', 'nexon ya brezza kaun safe hai', 'Brezza और Nexon की सेफ़्टी', 'tata zyada safe hai kya', 'सेफ़्टी में कौन आगे है'],
   'On the published tests they are level today. The Nexon has {f:nx.crash}; the Brezza now has {f:brz.crash}. Both have {f:nx.airbags} as standard. The Nexon earned its rating earlier, which is why it is better known for safety.',

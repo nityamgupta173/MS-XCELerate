@@ -90,7 +90,7 @@ export function Surface({ children, className, sheet = 'center' }: { children: R
             <div className={`pop-scrim pop-${sheet}`} onClick={() => setPop(null)} data-testid="pop">
               <div className="pop" role="dialog" aria-modal="true" aria-label={pop.title} onClick={(e) => e.stopPropagation()}>
                 <div className="pop-head">
-                  <h2>{pop.title}</h2>
+                  <h2 data-ui>{pop.title}</h2>
                   <button ref={closeRef} className="btn btn-quiet pop-close" onClick={() => setPop(null)} aria-label={t('pop.close')}><X aria-hidden /></button>
                 </div>
                 <div className="pop-body">{pop.body}</div>
@@ -109,7 +109,9 @@ export const Ui = ({ children }: { children: number | string }) => (
   <span data-ui className="num">{typeof children === 'number' ? formatNumber(children, 2) : children}</span>
 );
 /** Rupees the buyer chose or typed (budget bands, their own fuel price). */
-export const UiMoney = ({ value }: { value: number }) => { const lang = useLang(); return <span data-ui className="num">{formatINR(value, lang)}</span>; };
+export const UiMoney = ({ value }: { value: number }) => { const lang = useLang(); return <span data-ui className="num">{formatINR(value, lang).replace('.00 ', ' ')}</span>; };
+/** A fuel price the buyer can edit, always to the paisa. */
+export const UiPrice = ({ value }: { value: number }) => <span data-ui className="num">₹{formatNumber(value, 2, 2)}</span>;
 
 function FactDetail({ id }: { id: string }) {
   const lang = useLang();
@@ -173,7 +175,7 @@ export function Calc({ v, plain }: { v: CalcValue; plain?: boolean }) {
       <dd>
         <ul className="inputs">
           {v.inputs.map((inp, i) => 'fact' in inp
-            ? <li key={i}><span>{FACTS.get(inp.fact)?.label}: </span><Fact id={inp.fact} plain /><span data-ui> · {FACTS.get(inp.fact)?.source}</span></li>
+            ? <li key={i}><span data-ui>{FACTS.get(inp.fact)?.label}: </span><Fact id={inp.fact} plain /><span data-ui> · {FACTS.get(inp.fact)?.source}</span></li>
             : <li key={i}><T k={`in.${inp.label}`} />: <span data-ui className="num">{formatValue(inp.value, inp.unit, lang)}</span></li>)}
         </ul>
       </dd>
@@ -231,7 +233,7 @@ export function SourcesButton({ className }: { className?: string }) {
         <ul className="sources">
           {ids.map((id) => { const f = FACTS.get(id)!; return (
             <li key={id}>
-              <strong>{f.label}</strong>
+              <strong data-ui>{f.label}</strong>
               <span>{f.value === null ? <Verify what={f.label} id={id} plain /> : <Fact id={id} plain />}</span>
               <span data-ui className="src">{f.source} · {f.retrieved}</span>
             </li>

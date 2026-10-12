@@ -49,9 +49,9 @@ function HubTabs() {
     while (i > end) { send({ type: 'BACK' }); i--; }
   };
   return (
-    <div className="hubtabs" role="tablist">
+    <div className="hubtabs">
       {HUB.map((step) => (
-        <button key={step} type="button" role="tab" aria-selected={s.step === step} className={`hubtab${s.step === step ? ' is-on' : ''}`} onClick={() => s.step !== step && go(step)}>
+        <button key={step} type="button" aria-current={s.step === step ? 'page' : undefined} className={`hubtab${s.step === step ? ' is-on' : ''}`} onClick={() => s.step !== step && go(step)}>
           <T k={`step.${step}`} />
         </button>
       ))}

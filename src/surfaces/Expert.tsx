@@ -41,14 +41,14 @@ function samples(now: number): SessionRecord[] {
   ];
 }
 
-function Clock({ r, now }: { r: SessionRecord; now: number }) {
+function Clock({ r, now, plain }: { r: SessionRecord; now: number; plain?: boolean }) {
   if (r.lead.contactedAt) return <span className="clock clock-ok"><CircleCheck aria-hidden /><T k="x.ex.clock.stopped" /></span>;
   if (!r.handoff.at) return <span className="clock"><T k="x.ex.clock.none" /></span>;
   const hours = (now - r.handoff.at) / HOUR;
   const t = hours < 1 ? <T k="x.ex.ago.m" p={{ n: { ui: Math.max(Math.round(hours * 60), 0) } }} /> : <T k="x.ex.ago.h" p={{ n: { ui: Math.round(hours * 10) / 10 } }} />;
   const state = hours >= 24 ? 'late' : hours >= 12 ? 'warn' : 'ok';
   const Icon = state === 'ok' ? AlarmClock : TriangleAlert;
-  return <span className={`clock clock-${state}`} data-testid="clock" data-state={state}><Icon aria-hidden /><T k={`x.ex.clock.${state}`} p={{ t }} /></span>;
+  return <span className={`clock clock-${state}`} data-testid="clock" data-state={state}><Icon aria-hidden /><T k={`x.ex.clock.${state}`} p={{ t }} plain={plain} /></span>;
 }
 
 export default function Expert() {
@@ -175,7 +175,7 @@ export default function Expert() {
                         <strong><T k={`profile.${g.profile}`} /></strong>
                         <span>{pick ? `${pick.model.name} ${pick.variant.name}` : '—'}</span>
                         <span className="note"><T k="x.ex.rival" />: {r.rivalId ? modelById(r.rivalId)?.name : <T k="x.ex.rival.none" />}</span>
-                        <Clock r={r} now={now} />
+                        <Clock r={r} now={now} plain />
                       </button>
                     </li>
                   );

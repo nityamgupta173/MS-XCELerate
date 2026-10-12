@@ -9,7 +9,7 @@ import { ask, intentById, suggestions } from '../../domain/qa';
 import { factIdsIn } from '../../domain/template';
 import type { AskedQuestion, FuelPrices, HandoffMode } from '../../domain/types';
 import type { CompareGroup, PromiseTab } from '../../state/kioskMachine';
-import { Better, Calc, Fact, Proposed, T, Tpl, Ui, UiMoney, Verify, calcText, copyOf, useLang, usePop, useText, type SlotValue } from '../../ui/core';
+import { Better, Calc, Fact, Proposed, T, Tpl, Ui, UiPrice, Verify, calcText, copyOf, useLang, usePop, useText, type SlotValue } from '../../ui/core';
 import { SIBLING, useKiosk, type Kiosk } from './context';
 import { CarHead, Opt, RowList } from './screensA';
 
@@ -104,15 +104,15 @@ export function Compare() {
         <HonestRead rows={rows} ours={pick.model.name} theirs={target.model.name} />
       </div>
       <div className="reach">
-        <div className="seg" role="tablist">
-          {groups.map((g) => <button key={g} type="button" role="tab" aria-selected={s.group === g} className={`segbtn${s.group === g ? ' is-on' : ''}`} onClick={() => send({ type: 'SET_GROUP', group: g })} data-testid={`group-${g}`}><T k={`cmp.group.${g}`} /></button>)}
+        <div className="seg">
+          {groups.map((g) => <button key={g} type="button" aria-pressed={s.group === g} className={`segbtn${s.group === g ? ' is-on' : ''}`} onClick={() => send({ type: 'SET_GROUP', group: g })} data-testid={`group-${g}`}><T k={`cmp.group.${g}`} /></button>)}
         </div>
         <table className="cmp">
           <thead><tr><td /><th scope="col">{pick.model.name}</th><th scope="col">{target.model.name}</th></tr></thead>
           <tbody>{shown.map((r) => <RowView key={r.key} r={r} />)}</tbody>
         </table>
         {s.group === 'ownership' && twin && <TwinPanel />}
-        <p className="fine"><T k="cmp.legend" /></p>
+        {s.group !== 'ownership' && <p className="fine"><T k="cmp.legend" /></p>}
         <div className="cta-row cta-3">
           <button type="button" className="btn" onClick={() => choose(copyOf(lang, 'cmp.switch'), pick.model, pick.variant.id, (id) => send({ type: 'SET_PICK', variantId: id }))} data-testid="switch-ours"><T k="cmp.switch" />: {pick.model.name}</button>
           <button type="button" className="btn" onClick={() => choose(copyOf(lang, 'cmp.switch'), target.model, target.variant.id, (id) => send({ type: 'SET_RIVAL_VARIANT', variantId: id }))} data-testid="switch-theirs"><T k="cmp.switch" />: {target.model.name}</button>
@@ -230,10 +230,10 @@ export function Ask() {
 }
 
 // ---------- Costs ----------
-export function Stepper({ label, value, onDec, onInc, children }: { label: ReactNode; value: ReactNode; onDec: () => void; onInc: () => void; children?: ReactNode }) {
+export function Stepper({ label, value, onDec, onInc, children, wide }: { label: ReactNode; value: ReactNode; onDec: () => void; onInc: () => void; children?: ReactNode; wide?: boolean }) {
   const t = useText();
   return (
-    <div className="stepper">
+    <div className={`stepper${wide ? ' stepper-wide' : ''}`}>
       <span className="stepper-label">{label}</span>
       <div className="stepper-row">
         <button type="button" className="btn btn-sq" onClick={onDec} aria-label={t('cost.dec')}><Minus aria-hidden /></button>
@@ -248,7 +248,7 @@ export function Stepper({ label, value, onDec, onInc, children }: { label: React
 export function CostChart({ cars, names, years, cross }: { cars: CarCost[]; names: Record<string, string>; years: number; cross: number | null }) {
   const lang = useLang();
   const t = useText();
-  const W = 960, H = 400, L = 20, R = 250, T0 = 30, B = 60;
+  const W = 960, H = 280, L = 20, R = 250, T0 = 30, B = 60;
   const series = costSeries(cars, years);
   const months = years * 12;
   const all = Object.values(series).flat().map((p) => p.cost);
@@ -311,7 +311,7 @@ export function Costs() {
   const set = (patch: Partial<typeof s.calc>) => send({ type: 'SET_CALC', patch });
   const ownerAvailable = Boolean(ownerEfficiency(pick.model, pick.variant) || (target && ownerEfficiency(target.model, target.variant)));
   const fuelRow = (key: 'petrol' | 'cng' | 'diesel', step: number) => (
-    <Stepper key={key} label={<T k={`cost.${key}`} />} value={<UiMoney value={prices[key]} />} onDec={() => set({ [key]: Math.max(Math.round((prices[key] - step) * 100) / 100, 1) })} onInc={() => set({ [key]: Math.round((prices[key] + step) * 100) / 100 })} />
+    <Stepper key={key} label={<T k={`cost.${key}`} />} value={<UiPrice value={prices[key]} />} onDec={() => set({ [key]: Math.max(Math.round((prices[key] - step) * 100) / 100, 1) })} onInc={() => set({ [key]: Math.round((prices[key] + step) * 100) / 100 })} />
   );
   return (
     <div className="screen screen-costs">
@@ -335,9 +335,7 @@ export function Costs() {
           {pb ? <PayBackLine pb={pb} names={names} /> : <p className="note"><T k="cost.single" /></p>}
         </div>
         <div className="steppers">
-          <Stepper label={<T k="cost.km" />} value={<><Ui>{s.calc.km}</Ui> <T k="cost.km.unit" /></>} onDec={() => set({ km: s.calc.km - 100 })} onInc={() => set({ km: s.calc.km + 100 })}>
-            <input type="range" className="slider" min={100} max={6000} step={50} value={s.calc.km} onChange={(e) => set({ km: Number(e.target.value) })} aria-label={copyOf(s.lang, 'cost.km')} data-testid="km-slider" />
-          </Stepper>
+          <Stepper wide label={<><T k="cost.km" />: <strong><Ui>{s.calc.km}</Ui> <T k="cost.km.unit" /></strong></>} value={<input type="range" className="slider" min={100} max={6000} step={50} value={s.calc.km} onChange={(e) => set({ km: Number(e.target.value) })} aria-label={copyOf(s.lang, 'cost.km')} data-testid="km-slider" />} onDec={() => set({ km: s.calc.km - 100 })} onInc={() => set({ km: s.calc.km + 100 })} />
           <Stepper label={<T k="cost.years" />} value={<Ui>{s.calc.years}</Ui>} onDec={() => set({ years: s.calc.years - 1 })} onInc={() => set({ years: s.calc.years + 1 })} />
           {(fuels.has('petrol') || fuels.has('hybrid')) && fuelRow('petrol', 0.5)}
           {fuels.has('cng') && fuelRow('cng', 0.5)}
@@ -444,9 +442,11 @@ function BookPanel() {
   const outlet = crossChannel && pick ? copyOf(lang, `outlet.${pick.model.channel}`) : copyOf(lang, 'outlet.here');
   return (
     <div className="panel">
-      <h2><T k="ho.book.title" /> <Proposed /></h2>
-      {pick && <CarHead model={pick.model} variant={pick.variant} plain />}
-      <p><T k="ho.book.body" /></p>
+      <div className="panel-display">
+        <h2><T k="ho.book.title" /> <Proposed /></h2>
+        {pick && <CarHead model={pick.model} variant={pick.variant} plain />}
+        <p><T k="ho.book.body" /></p>
+      </div>
       <div className="opts">
         {['sat1', 'sat2', 'wk'].map((slot) => <Opt key={slot} on={h.slot === slot} disabled={h.booked} onClick={() => send({ type: 'PICK_SLOT', slot })} title={<T k={`slot.${slot}`} />} testid={`slot-${slot}`} />)}
       </div>
@@ -474,11 +474,11 @@ export function Handoff() {
   const card = (m: HandoffMode, icon: ReactNode, k: string, onClick?: () => void) => (
     <button type="button" className="hocard" onClick={onClick ?? (() => send({ type: 'HANDOFF_MODE', mode: m }))} data-testid={`ho-${m}`}>
       <span className="hocard-icon" aria-hidden>{icon}</span>
-      <span className="opt-text"><span className="opt-title"><T k={`ho.${k}.title`} /></span><span className="opt-desc"><T k={`ho.${k}.body`} /></span></span>
+      <span className="opt-text"><span className="opt-title"><T k={`ho.${k}.title`} /></span><span className="opt-desc"><T k={`ho.${k}.body`} plain /></span></span>
     </button>
   );
   return (
-    <div className="screen screen-handoff">
+    <div className={`screen screen-handoff${mode ? ' has-panel' : ''}`}>
       <div className="display"><h1><T k="ho.title" /></h1>{!mode && <p className="lede"><T k="ho.sub" /></p>}</div>
       <div className="reach">
         {!mode && (
