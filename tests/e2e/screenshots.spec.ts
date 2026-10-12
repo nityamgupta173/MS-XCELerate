@@ -18,6 +18,7 @@ for (const [name, persona] of combos) {
     await toMatch(page, persona, shot);
     await tid(page, 'see-compare').click();
     for (const g of ['running', 'basics', 'safety', 'ownership']) { await tid(page, `group-${g}`).click(); await shot(`11-compare-${g}`); }
+    await tid(page, 'group-running').click();
     await tid(page, 'switch-ours').click();
     await shot('11-compare-variant-picker');
     await page.getByRole('button', { name: /Close|बंद करें/ }).click();
