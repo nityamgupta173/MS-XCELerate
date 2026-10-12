@@ -12,6 +12,7 @@ const WORDS: Record<string, { en: string; hi: string }> = {
   points: { en: 'points', hi: 'अंक' },
   l: { en: 'litres', hi: 'लीटर' },
   seats: { en: 'seats', hi: 'सीटें' },
+  km: { en: 'km', hi: 'किमी' },
 };
 /** Units that are shown bare (the surrounding sentence names the thing). */
 const BARE = new Set(['metros', 'cities', 'outlets', 'pods', 'units', 'listings', 'reviews', 'posts', 'verdicts', 'assistants', 'touchpoints', 'sessions']);

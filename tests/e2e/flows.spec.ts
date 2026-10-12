@@ -373,3 +373,16 @@ test.describe('scaling', () => {
     });
   }
 });
+
+test('the kiosk works offline after the first load', async ({ page, context }) => {
+  await page.goto('/kiosk?channel=nexa');
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+  await page.waitForTimeout(1500);
+  await context.setOffline(true);
+  await page.reload();
+  await tid(page, 'start').click();
+  await tid(page, 'lang-hi').click();
+  await expectStep(page, 'shortlist');
+  await expect(page.locator('h1')).toHaveText('आपकी सूची में और क्या है?');
+  await context.setOffline(false);
+});

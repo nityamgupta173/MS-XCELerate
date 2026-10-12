@@ -49,6 +49,8 @@
 html, body, #root { height: 100%; margin: 0; }
 body { font-family: var(--font); background: #05070d; color: var(--ink); -webkit-font-smoothing: antialiased; }
 [lang='hi'], .is-hi { line-height: 1.6; }
+/* Devanagari must not be letter-spaced or upper-cased: it breaks the conjuncts and the headline. */
+.is-hi .eyebrow, .is-hi .tag, .is-hi h2, .is-hi .detail dt { letter-spacing: 0; text-transform: none; }
 h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
 ul, ol { list-style: none; }
 button, input { font: inherit; color: inherit; }

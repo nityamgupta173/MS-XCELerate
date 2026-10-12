@@ -65,6 +65,7 @@ describe('format: Indian conventions', () => {
   it('formats units', () => {
     expect(formatValue(27.97, 'km/l')).toBe('27.97 km/l');
     expect(formatValue(45000, 'km')).toBe('45,000 km');
+    expect(formatValue(45000, 'km', 'hi')).toBe('45,000 किमी');
     expect(formatValue(102.12, 'INR/l')).toBe('₹102.12/l');
     expect(formatValue(60, '%')).toBe('60%');
   });

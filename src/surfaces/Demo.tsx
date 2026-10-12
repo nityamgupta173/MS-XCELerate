@@ -80,7 +80,7 @@ const CLAIMS: Array<{ state?: Partial<KioskState>; tab?: Tab }> = [
 
 const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 const EVENT_GAP = 420;
-const DWELL = 4600;
+const DWELL = 6000;
 
 export default function Demo() {
   const [tab, setTab] = useState<Tab>('tablet');

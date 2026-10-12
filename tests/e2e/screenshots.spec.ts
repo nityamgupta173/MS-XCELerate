@@ -111,6 +111,7 @@ test('screenshots: phone, tablet, council, about', async ({ context, page }) => 
   await p.waitForTimeout(300);
   await p.screenshot({ path: 'screenshots/other/council.png', fullPage: true });
   await p.goto('/about');
+  await p.locator('table.facts').waitFor();
   await p.screenshot({ path: 'screenshots/other/about.png' });
 });
 
