@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { existsSync, readdirSync } from 'node:fs';
+
+// Car images are optional: drop <model id>.webp into public/cars and rebuild.
+const carImages = existsSync('public/cars') ? readdirSync('public/cars').filter((f) => f.endsWith('.webp')).map((f) => f.replace(/.webp$/, '')) : [];
 
 export default defineConfig({
   plugins: [
@@ -23,6 +27,7 @@ export default defineConfig({
       },
     }),
   ],
+  define: { __CAR_IMAGES__: JSON.stringify(carImages) },
   build: { target: 'es2022', sourcemap: false },
   test: { include: ['tests/unit/**/*.test.ts'], environment: 'node' },
 });

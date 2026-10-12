@@ -381,7 +381,6 @@
   "profile.upgrader": "The Arrived Upgrader",
   "profile.family": "The First-SUV Family",
   "profile.stylist": "The Budget Stylist",
-
   "x.ex.title": "Product expert",
   "x.ex.queue": "Kiosk sessions",
   "x.ex.sample": "Sample",
@@ -457,7 +456,6 @@
   "x.ex.score.ntb": "New-to-brand share of SUV bookings",
   "x.ex.ago.m": "{n} min",
   "x.ex.ago.h": "{n} h",
-
   "x.co.title": "SUV Council: kiosk pilot",
   "x.co.banner": "Simulated pilot data. Every figure on this page is generated, not measured.",
   "x.co.seed": "Seed",
@@ -530,7 +528,6 @@
   "x.co.pilot.diff": "Difference",
   "x.co.pilot.caveat": "Simulated. The two rates also have different denominators (kiosk sessions and walk-ins), so a real pilot must compare bookings per outlet, not these rates.",
   "x.co.table.alt": "Data table",
-
   "x.de.header": "The kiosk is how the organisation shows up on the showroom floor.",
   "x.de.sub": "Seven claims. Tap one to jump to the moment that proves it.",
   "x.de.claim.1": "Wins on ownership, not price",
@@ -595,7 +592,6 @@
   "x.de.s.6": "They ask about offers. The kiosk does not quote them and says why: dealers set prices.",
   "x.de.s.7": "They scan the QR code. No number is asked for and nothing personal is in the code.",
   "x.de.s.8": "The phone page carries the comparison, the questions and a delete button.",
-
   "x.ab.title": "About this prototype",
   "x.ab.what.h": "What this is",
   "x.ab.what": "A working exhibit for our {f:meta.event} entry, \"Higher Ground\". It shows how the proposed organisation would behave on the showroom floor: honest comparison, channel neutrality, after-sales promises, a consented hand-off to a person, and data that feeds management. It is not an official Maruti Suzuki product.",
@@ -638,5 +634,18 @@
   "x.ab.limits.6": "The electric is left out of running-cost comparisons until a consumption figure is sourced.",
   "x.ab.sources.h": "Every fact, with its source",
   "x.ab.sources.filter": "Show only facts needing verification",
-  "x.ab.back": "Back to the demo"
+  "x.ab.back": "Back to the demo",
+  "cmp.group.running": "Cost",
+  "cmp.group.basics": "Engine",
+  "cmp.group.safety": "Safety and space",
+  "cmp.group.ownership": "After you buy",
+  "match.choose": "Look at this one",
+  "img.needed": "Image needed",
+  "x.ab.privacy.anon": "A session that ends without a hand-off leaves only anonymous counts in this browser: the step reached and which library answers were used. The words of the buyer's questions are dropped.",
+  "x.ex.q.dropped": "Question text not kept",
+  "x.ab.skill": "Reach zone: on the kiosk every primary control sits in the lower part of the screen. The top is for headings, images and comparison headers.",
+  "x.ab.facts.id": "Fact",
+  "x.ab.facts.value": "Value",
+  "x.ab.facts.source": "Source",
+  "x.ab.facts.status": "Status"
 }

@@ -38,7 +38,7 @@ for (const file of walk('src')) {
     for (const m of line.matchAll(/>([^<>{}]+)</g)) {
       const text = m[1]!;
       // Skip generics and comparisons that happen to sit between angle brackets in TypeScript.
-      if (/[=;()]|=>/.test(text)) continue;
+      if (/[=;()?&|]/.test(text)) continue;
       if (DIGIT.test(text)) errors.push(`${file}:${i + 1}: digit in JSX text "${text.trim()}"`);
     }
   });
