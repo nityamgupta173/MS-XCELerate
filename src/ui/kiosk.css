@@ -152,6 +152,7 @@
 .cmp tbody tr { border-top: 2px solid var(--line); }
 .cmp td.is-better { background: var(--accent-soft); }
 .cmp .fact { white-space: normal; }
+.is-twin .cta-3 { display: none; }
 .twin ul { gap: 6px; }
 .screen-compare .reach { gap: 16px; }
 .twin { padding: 12px 18px; border: 2px solid var(--accent); border-radius: var(--radius); }

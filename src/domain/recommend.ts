@@ -226,7 +226,7 @@ export function recommend(answers: Answers, channel: Channel, cat: Catalogue): R
     }
     // Everything we sell costs less than the band: say so, then show the top of the range.
     noFit = { kind: 'aboveRange' };
-    pool = byFuel;
+    pool = cat.models.map((m) => byFuel.filter((c) => c.model.id === m.id).sort((x, y) => y.price - x.price)[0]).filter((c): c is Cand => Boolean(c));
   }
   if (!pool.length) return empty;
 

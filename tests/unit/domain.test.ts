@@ -176,7 +176,7 @@ describe('comparison', () => {
   it('matches the same type of engine at the nearest price', () => {
     const gv = lookup('gv.alphaplus-sh')!.variant;
     expect(closestVariant(gv, RIVALS.find((r) => r.id === 'hy')!)).toMatchObject({ variant: { id: 'hy.v-sh' }, rule: 'sameType' });
-    expect(closestVariant(gv, RIVALS.find((r) => r.id === 'cr')!)).toMatchObject({ variant: { id: 'cr.king-turbo' }, rule: 'nearestPrice' });
+    expect(closestVariant(gv, RIVALS.find((r) => r.id === 'cr')!)).toMatchObject({ variant: { id: 'cr.king-ivt' }, rule: 'nearestPrice' });
     expect(closestVariant(lookup('vic.vxi-cng')!.variant, RIVALS.find((r) => r.id === 'nx')!).variant.id).toBe('nx.smartplus-cng');
   });
   it('per 1,000 km reproduces the brief', () => expect(roundRupee(per1000(lookup('gv.alphaplus-sh')!.variant, prices)!.value)).toBe(3651));

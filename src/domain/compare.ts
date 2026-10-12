@@ -51,7 +51,10 @@ export function closestVariant(ours: Variant, rival: Model): { variant: Variant;
   const same = rival.variants.filter((v) => v.fuel === ours.fuel && v.drive === ours.drive);
   const sameFuel = same.length ? same : rival.variants.filter((v) => v.fuel === ours.fuel);
   if (sameFuel.length) return { variant: nearest(sameFuel), rule: 'sameType' };
-  return { variant: nearest(rival.variants.filter((v) => v.fuel !== 'diesel')), rule: 'nearestPrice' };
+  // Prefer a variant with a published efficiency figure, so the comparison can be costed.
+  const pool = rival.variants.filter((v) => v.fuel !== 'diesel');
+  const costed = pool.filter((v) => num(v.facts.efficiency) !== null);
+  return { variant: nearest(costed.length ? costed : pool), rule: 'nearestPrice' };
 }
 
 const cell = (id: string | null, what: string): Cell => {
@@ -64,6 +67,8 @@ const has = (c: Cell) => 'fact' in c || 'calc' in c;
 
 function pick(a: number | null, b: number | null, lowerIsBetter = false): 'a' | 'b' | null {
   if (a === null || b === null || a === b) return null;
+  // Within one per cent is a tie: Rs 100 on a Rs 20 lakh car, or 114 bhp against 115 PS, is not a lead.
+  if (Math.abs(a - b) <= Math.max(Math.abs(a), Math.abs(b)) * 0.01) return null;
   return a < b === lowerIsBetter ? 'a' : 'b';
 }
 

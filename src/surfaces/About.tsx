@@ -36,7 +36,7 @@ export default function About() {
           {sec('x.ab.roll.h', ['x.ab.roll.1', 'x.ab.roll.2', 'x.ab.roll.3', 'x.ab.roll.4'])}
           {sec('x.ab.price.h', ['x.ab.price'])}
           {sec('x.ab.privacy.h', ['x.ab.privacy', 'x.ab.privacy.anon'])}
-          {sec('x.ab.limits.h', ['x.ab.limits.1', 'x.ab.limits.2', 'x.ab.limits.3', 'x.ab.limits.4', 'x.ab.limits.5', 'x.ab.limits.6'])}
+          {sec('x.ab.limits.h', ['x.ab.limits.1', 'x.ab.limits.2', 'x.ab.limits.3', 'x.ab.limits.4', 'x.ab.limits.5', 'x.ab.limits.6', 'x.ab.limits.7', 'x.ab.limits.8'])}
           <section>
             <h2><T k="x.ab.sources.h" /></h2>
             <label className="tick"><input type="checkbox" checked={onlyGaps} onChange={() => setOnlyGaps(!onlyGaps)} data-testid="only-gaps" /><span><T k="x.ab.sources.filter" /></span></label>

@@ -187,6 +187,7 @@ export default function Demo() {
               <span><T k="x.de.frame.kiosk" /></span>
               <span className="de-switch"><T k="x.de.kioskAt" />{(['nexa', 'arena', 'pod'] as Channel[]).map((c) => <button key={c} type="button" className={`mini${channel === c ? ' is-on' : ''}`} onClick={() => setKioskChannel(c)} data-testid={`ch-${c}`}><T k={c === 'pod' ? 'channel.pod' : `ch.${c}`} /></button>)}</span>
             </div>
+            <a className="de-open" href={`/kiosk?channel=${channel}`} target="_blank" rel="noreferrer"><T k="x.de.open" /></a>
             <div className="bezel bezel-kiosk"><iframe title="Floor kiosk" src="/kiosk?channel=nexa&embed=1" data-testid="frame-kiosk" /></div>
           </section>
           <section className="de-phone" aria-label="Buyer's phone">

@@ -41,7 +41,7 @@ export function derive(s: KioskState): Omit<Kiosk, 's' | 'send'> {
   };
   const rec = recommend(s.answers, s.channel, { models: MODELS, rivals: RIVALS, prices });
   const fallback = rec.noFit?.kind === 'budget' ? rec.noFit.nearest[0]?.variantId : undefined;
-  const pickId = s.pickVariantId ?? rec.primary?.variantId ?? fallback ?? (s.quick ? QUICK_DEFAULT[s.channel] : null);
+  const pickId = s.pickVariantId ?? (s.quick && !s.answers.budget ? QUICK_DEFAULT[s.channel] : null) ?? rec.primary?.variantId ?? fallback ?? null;
   const pick = pickId ? (lookup(pickId) ?? null) : null;
 
   let target: Target | null = null;

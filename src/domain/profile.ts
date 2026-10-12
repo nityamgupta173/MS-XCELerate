@@ -28,7 +28,9 @@ export function suggestConversation(s: SessionRecord, profile: Profile, concessi
   const open: Record<Profile, string> = { upgrader: 'talk.open.upgrader', family: 'talk.open.family', stylist: 'talk.open.stylist' };
   const unanswered = s.questions.filter((q) => q.route !== 'answer');
   const steps: ConversationStep[] = [{ key: open[profile] }];
-  if (unanswered.length) steps.push({ key: 'talk.unanswered', params: { q: unanswered[0]!.q } });
+  const gap = unanswered.find((q) => q.route === 'unanswered' && q.q);
+  if (gap) steps.push({ key: 'talk.unanswered', params: { q: gap.q } });
+  else if (unanswered.length) steps.push({ key: 'talk.price' });
   else if (s.questions.length) steps.push({ key: 'talk.followup', params: { q: s.questions[s.questions.length - 1]!.q } });
   else steps.push({ key: 'talk.noQuestions' });
   steps.push(concessionRow ? { key: 'talk.concede', params: { row: concessionRow } } : { key: 'talk.concede.none' });

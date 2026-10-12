@@ -62,8 +62,8 @@ export default function Council() {
     if (st === 'compare') return order.indexOf(s.furthest) >= order.indexOf('compare');
     if (st === 'ask') return s.questions.length > 0;
     if (st === 'handoff') return s.handoff.mode !== null;
-    if (st === 'drive') return s.handoff.mode === 'book';
-    return s.lead.status === 'booked';
+    if (st === 'drive') return s.handoff.mode === 'book' || s.lead.status === 'booked';
+    return false; // no car is ever booked in the demo
   }).length;
 
   const select = (label: string, value: string, set: (v: string) => void, opts: Array<[string, string]>) => (

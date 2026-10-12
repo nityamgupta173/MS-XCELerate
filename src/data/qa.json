@@ -300,6 +300,7 @@
    "en": [
     "Do I need to plug it in?",
     "does the hybrid need charging",
+    "does the hybrid need plugging in",
     "do i have to charge the hybrid",
     "is there a charging cable",
     "where do i charge the hybrid"
@@ -475,6 +476,7 @@
    "hi": [
     "क्या Nexon, Brezza से ज़्यादा सुरक्षित है?",
     "nexon ya brezza kaun safe hai",
+    "Nexon ज़्यादा सुरक्षित है क्या",
     "Brezza और Nexon की सेफ़्टी",
     "tata zyada safe hai kya",
     "सेफ़्टी में कौन आगे है"
@@ -523,6 +525,7 @@
    "en": [
     "How big is the boot?",
     "boot space",
+    "what is the boot space",
     "luggage space",
     "how many bags fit",
     "dickey space"
@@ -790,6 +793,7 @@
    "en": [
     "What is the catch with the Promise?",
     "conditions on buyback",
+    "catches in the promise",
     "buyback terms and conditions",
     "hidden conditions",
     "when does the promise not apply"
@@ -850,6 +854,7 @@
    "hi": [
     "Service Pledge क्या है?",
     "service pledge kya hai",
+    "सर्विस प्लेज क्या है",
     "अगर रिपेयर ठीक न हो तो",
     "loaner car milegi kya",
     "सर्विस के दौरान दूसरी गाड़ी"
@@ -909,7 +914,7 @@
    ]
   },
   "a": {
-   "en": "A proposal in pilot design: you keep the car for {f:prog.weekend.hours} instead of a {f:prog.weekend.loop} loop, long enough for a highway run and your own parking. It is the fairest way to judge a hybrid.",
+   "en": "A proposal in pilot design: you keep the car for {f:prog.weekend.hours} instead of a loop of {f:prog.weekend.loop}, long enough for a highway run and your own parking. It is the fairest way to judge a hybrid.",
    "hi": "यह प्रस्ताव है, जिसका पायलट तैयार हो रहा है: {f:prog.weekend.loop} के चक्कर की जगह गाड़ी {f:prog.weekend.hours} आपके पास रहती है, ताकि आप हाईवे पर चला सकें और अपनी पार्किंग में लगाकर देख सकें। हाइब्रिड को परखने का यही सबसे सही तरीका है।"
   }
  },

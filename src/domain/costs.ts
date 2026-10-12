@@ -47,6 +47,7 @@ export function carCost(model: Model, variant: Variant, prices: FuelPrices, km: 
 export type PayBack =
   | { kind: 'catchesUp'; dear: string; gap: CalcValue; saving: CalcValue; km: CalcValue; months: CalcValue; beyond: boolean }
   | { kind: 'never'; dear: string; gap: CalcValue }
+  | { kind: 'tooLong'; dear: string; gap: CalcValue; saving: CalcValue }
   | { kind: 'cheaperBoth'; cheap: string }
   | { kind: 'samePrice' };
 
@@ -60,6 +61,7 @@ export function payBack(a: CarCost, b: CarCost, km: number, years: number): PayB
   if (savingValue <= 0) return savingValue < 0 || gapValue > 0 ? (savingValue < 0 ? { kind: 'cheaperBoth', cheap: cheap.id } : { kind: 'never', dear: dear.id, gap }) : { kind: 'samePrice' };
   const be = breakEven(gapValue, savingValue, km)!;
   const saving: CalcValue = { id: 'saving', value: savingValue, unit: 'INR', formula: 'saving', inputs: [{ label: 'saving', value: savingValue, unit: 'INR' }] };
+  if (be.months > 240) return { kind: 'tooLong', dear: dear.id, gap, saving };
   const kmCalc: CalcValue = { id: 'breakeven.km', value: be.km, unit: 'km', formula: 'breakEvenKm', inputs: [{ label: 'priceGap', value: gapValue, unit: 'INR' }, { label: 'saving', value: savingValue, unit: 'INR' }] };
   const months: CalcValue = { id: 'breakeven.months', value: Math.ceil(be.months), unit: 'months', formula: 'breakEvenMonths', inputs: [{ label: 'breakKm', value: be.km, unit: 'km' }, { label: 'km', value: km, unit: 'km' }] };
   return { kind: 'catchesUp', dear: dear.id, gap, saving, km: kmCalc, months, beyond: be.months > years * 12 };

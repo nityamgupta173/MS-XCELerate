@@ -214,7 +214,7 @@
   "list.and": "and",
   "cmp.title": "Like for like",
   "cmp.rule.sameType": "Compared at the nearest price with the same type of engine.",
-  "cmp.rule.nearestPrice": "The {rival} has no engine of this type, so this is its nearest price.",
+  "cmp.rule.nearestPrice": "The {rival} has no engine of this type, so this is its nearest-priced variant with a published efficiency figure.",
   "cmp.ours": "Our pick",
   "cmp.theirs": "On your list",
   "cmp.sibling": "From our range",
@@ -299,8 +299,8 @@
   "prom.pledge.e1": "More than {f:service.touchpoints} service touchpoints across the country.",
   "prom.pledge.e2": "Owners told us service is where loyalty breaks. This pledge is how we intend to fix that, and outlets are scored on it.",
   "prom.pledge.e3": "On the dealer scorecard: {f:score.pledge.pts} for keeping the pledge and {f:score.ftf.pts} for repairs fixed first time, out of {f:score.total}.",
-  "prom.weekend.terms": "Keep the car for {f:prog.weekend.hours}, not a {f:prog.weekend.loop} loop. Take it on the highway, park it at home, fill it up once.",
-  "prom.weekend.e1": "A {f:prog.weekend.loop} loop can't show you a hybrid's range.",
+  "prom.weekend.terms": "Keep the car for {f:prog.weekend.hours}, not for {f:prog.weekend.loop} around the block. Take it on the highway, park it at home, fill it up once.",
+  "prom.weekend.e1": "A drive of {f:prog.weekend.loop} can't show you a hybrid's range.",
   "prom.weekend.e2": "You can book it from this screen for a car from either showroom.",
   "prom.weekend.e3": "Outlets are scored on how many drives turn into bookings: {f:score.drive.pts} out of {f:score.total}.",
   "prom.cta": "Book Weekend Ownership",
@@ -647,5 +647,11 @@
   "x.ab.facts.id": "Fact",
   "x.ab.facts.value": "Value",
   "x.ab.facts.source": "Source",
-  "x.ab.facts.status": "Status"
+  "x.ab.facts.status": "Status",
+  "match.also.plain": "Sold at {channel}.",
+  "talk.price": "They asked about price or offers. Give a written quote when they ask for one; do not open with a discount.",
+  "cost.breakeven.long": "The {dear} costs {gap} more to buy and {saving} less to run per {n:1000} km. At your distance that takes more than twenty years to recover, so fuel alone does not justify the difference.",
+  "ask.calcOnly": "the calculation above; tap it to see its inputs",
+  "x.ab.limits.7": "Fixed terms such as crash ratings, warranties and programme terms are stored once, in English, and appear in English on Hindi screens.",
+  "x.ab.limits.8": "There is no server, so a number sent with consent is held in this browser's storage. A production build would hold it server-side and encrypted."
 }

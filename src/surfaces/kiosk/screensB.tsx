@@ -92,7 +92,7 @@ export function Compare() {
   const groups: CompareGroup[] = ['running', 'basics', 'safety', 'ownership'];
   const shown = rows.filter((r) => GROUPS[s.group].includes(r.key)).sort((a, b) => GROUPS[s.group].indexOf(a.key) - GROUPS[s.group].indexOf(b.key));
   return (
-    <div className="screen screen-compare">
+    <div className={`screen screen-compare${s.group === 'ownership' && twin ? ' is-twin' : ''}`}>
       <div className="display">
         <div className="versus">
           <CarHead model={pick.model} variant={pick.variant} tag={<T k="cmp.ours" />} />
@@ -169,7 +169,7 @@ export function Answer({ q, k, km, years, plain }: { q: AskedQuestion; k: Pick<K
       <p><Tpl tpl={tpl} ctx={ctx} plain={plain} /></p>
       {intent.route === 'expert' && <p className="routed" data-testid="routed"><T k="ask.routed" /></p>}
       <p className="fine">
-        <T k="ask.facts" />: {ids.length === 0 ? <T k="ask.nofacts" /> : ids.map((id, i) => <span key={id}>{i > 0 && ' · '}<Fact id={id} plain={plain} /></span>)}
+        <T k="ask.facts" />: {ids.length === 0 ? <T k={ctxNames.length ? 'ask.calcOnly' : 'ask.nofacts'} /> : ids.map((id, i) => <span key={id}>{i > 0 && ' · '}<Fact id={id} plain={plain} /></span>)}
         {' · '}<T k="ask.checked" /> <span data-ui>{intent.checked}</span>
       </p>
     </div>
@@ -255,7 +255,7 @@ export function CostChart({ cars, names, years, cross }: { cars: CarCost[]; name
   const lo = Math.min(...all), hi = Math.max(...all);
   const x = (m: number) => L + (m / months) * (W - L - R);
   const y = (c: number) => T0 + (1 - (c - lo) / (hi - lo || 1)) * (H - T0 - B);
-  const ends = cars.map((c) => ({ c, ey: y(series[c.id]![months]!.cost) }));
+  const ends = cars.map((c) => ({ c, ey: Math.max(y(series[c.id]![months]!.cost), T0 + 10) }));
   if (ends.length === 2 && Math.abs(ends[0]!.ey - ends[1]!.ey) < 64) {
     const up = ends[0]!.ey < ends[1]!.ey ? 0 : 1;
     const mid = (ends[0]!.ey + ends[1]!.ey) / 2;
@@ -294,6 +294,7 @@ export function costModel(pick: { model: Model; variant: Variant }, target: { mo
 export function PayBackLine({ pb, names }: { pb: NonNullable<ReturnType<typeof costModel>['pb']>; names: Record<string, string> }) {
   if (pb.kind === 'samePrice') return <p><T k="cost.breakeven.same" /></p>;
   if (pb.kind === 'cheaperBoth') return <p><T k="cost.breakeven.both" p={{ cheap: names[pb.cheap] }} /></p>;
+  if (pb.kind === 'tooLong') return <p data-testid="payback"><T k="cost.breakeven.long" p={{ dear: names[pb.dear], gap: { calc: pb.gap }, saving: { calc: pb.saving } }} /></p>;
   if (pb.kind === 'never') return <p><T k="cost.breakeven.never" p={{ dear: names[pb.dear], gap: { calc: pb.gap } }} /></p>;
   return (
     <p data-testid="payback">
@@ -332,7 +333,7 @@ export function Costs() {
       <div className="reach">
         <div className="payback">
           <h2><T k="cost.breakeven.title" /></h2>
-          {pb ? <PayBackLine pb={pb} names={names} /> : <p className="note"><T k="cost.single" /></p>}
+          {pb ? <PayBackLine pb={pb} names={names} /> : !target ? <p className="note"><T k="cost.single" /></p> : null}
         </div>
         <div className="steppers">
           <Stepper wide label={<><T k="cost.km" />: <strong><Ui>{s.calc.km}</Ui> <T k="cost.km.unit" /></strong></>} value={<input type="range" className="slider" min={100} max={6000} step={50} value={s.calc.km} onChange={(e) => set({ km: Number(e.target.value) })} aria-label={copyOf(s.lang, 'cost.km')} data-testid="km-slider" />} onDec={() => set({ km: s.calc.km - 100 })} onInc={() => set({ km: s.calc.km + 100 })} />
@@ -439,7 +440,8 @@ function BookPanel() {
   const { s, send, pick, crossChannel } = useKiosk();
   const lang = useLang();
   const h = s.handoff;
-  const outlet = crossChannel && pick ? copyOf(lang, `outlet.${pick.model.channel}`) : copyOf(lang, 'outlet.here');
+  const away = Boolean(pick && (crossChannel || s.channel === 'pod'));
+  const outlet = away ? copyOf(lang, `outlet.${pick!.model.channel}`) : copyOf(lang, 'outlet.here');
   return (
     <div className="panel">
       <div className="panel-display">

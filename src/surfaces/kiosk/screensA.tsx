@@ -66,6 +66,7 @@ export function Attract() {
         <p className="lede"><T k="attract.sub" /></p>
         <button type="button" className="btn btn-primary btn-xl" onClick={() => send({ type: 'START' })} data-testid="start"><T k="attract.start" /><ArrowRight aria-hidden /></button>
         <button type="button" className="btn btn-xl" onClick={() => send({ type: 'QUICK_COMPARE' })} data-testid="quick"><T k="attract.quick" /></button>
+        <button type="button" className="btn btn-quiet" onClick={() => send({ type: 'SET_LANG', lang: s.lang === 'en' ? 'hi' : 'en' })} data-testid="attract-lang" lang={s.lang === 'en' ? 'hi' : 'en'}><T k={s.lang === 'en' ? 'lang.hi' : 'lang.en'} /></button>
         <p className="fine"><T k="attract.privacy" /></p>
       </section>
     </div>
@@ -163,7 +164,7 @@ export function Needs() {
   return (
     <div className="screen">
       <div className="display">
-        <span className="eyebrow"><T k="needs.count" p={{ i: { ui: Math.min(s.needsIndex + 1, 5) }, n: { ui: 5 } }} /></span>
+        {key !== 'age' && <span className="eyebrow"><T k="needs.count" p={{ i: { ui: s.needsIndex + 1 }, n: { ui: 5 } }} /></span>}
         <h1><T k={`${titleKey}.title`} /></h1>
         <p className="lede"><T k={`${titleKey}.sub`} /></p>
       </div>
@@ -193,7 +194,7 @@ function Reasons({ scored }: { scored: Scored }) {
 }
 
 function AltCard({ scored, label }: { scored: Scored; label?: ReactNode }) {
-  const { s, send } = useKiosk();
+  const { s, send, pick } = useKiosk();
   const v = lookup(scored.variantId)!;
   const home = s.channel === 'pod' ? null : s.channel;
   const cross = home !== null && v.model.channel !== home;
@@ -201,7 +202,7 @@ function AltCard({ scored, label }: { scored: Scored; label?: ReactNode }) {
     <button type="button" className="altcard" onClick={() => send({ type: 'SET_PICK', variantId: scored.variantId })} data-testid={`alt-${v.model.id}`}>
       <CarHead model={v.model} variant={v.variant} tag={label} plain />
       <span className="altcard-note">
-        <T k={cross ? 'match.also.cross' : 'match.also.same'} p={{ channel: copyOf(s.lang, `ch.${v.model.channel}`) }} />
+        <T k={cross ? 'match.also.cross' : pick && pick.model.channel === v.model.channel ? 'match.also.same' : 'match.also.plain'} p={{ channel: copyOf(s.lang, `ch.${v.model.channel}`) }} />
         {cross && <> <Proposed plain /></>}
       </span>
       <span className="altcard-go"><T k="match.choose" /><ArrowRight aria-hidden /></span>
@@ -233,6 +234,7 @@ export function Match() {
   if (!pick) return null;
   const budgetMiss = rec.noFit?.kind === 'budget' ? rec.noFit : null;
   const primary = rec.primary && rec.primary.variantId === pick.variant.id ? rec.primary : null;
+  const scored = primary ?? (rec.alternative && rec.alternative.variantId === pick.variant.id ? rec.alternative : null);
   const alt = budgetMiss ? budgetMiss.nearest.find((n) => n.variantId !== pick.variant.id) : rec.alternative && rec.alternative.modelId !== pick.model.id ? rec.alternative : rec.primary && rec.primary.modelId !== pick.model.id ? rec.primary : null;
   const top = s.answers.priorities[0];
   return (
@@ -242,12 +244,12 @@ export function Match() {
         {budgetMiss && <p className="notice"><strong><T k="match.nofit.budget.title" /></strong> <T k="match.nofit.budget.body" p={{ gap: { calc: budgetMiss.gap } }} /></p>}
         {rec.noFit?.kind === 'aboveRange' && <p className="notice"><T k="match.above" /></p>}
         <CarHead model={pick.model} variant={pick.variant} tag={<T k="match.at" p={{ channel: copyOf(lang, `ch.${pick.model.channel}`) }} />} />
-        {primary && (<><h2><T k="match.why" /></h2><Reasons scored={primary} /></>)}
+        {scored && (<><h2><T k="match.why" /></h2><Reasons scored={scored} /></>)}
         {crossChannel && <p className="cross" data-testid="cross"><T k="match.cross" p={{ channel: copyOf(lang, `ch.${pick.model.channel}`) }} /> <Proposed /></p>}
       </div>
       <div className="reach">
-        <h2><T k="match.rival.title" /></h2>
-        {rec.rivalNotes.length === 0 && <p className="note"><T k="match.rival.none" /></p>}
+        {primary && <h2><T k="match.rival.title" /></h2>}
+        {primary && s.answers.shortlist.length === 0 && <p className="note"><T k="match.rival.none" /></p>}
         <ul className="rivalnotes">
           {(primary ? rec.rivalNotes : []).map((n) => {
             const name = modelById(n.rivalId)!.name;

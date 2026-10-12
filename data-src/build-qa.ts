@@ -70,7 +70,7 @@ I('hybrid.how', 'hybrid', { chip: true },
   'A petrol engine and an electric motor share the work. The car can pull away and crawl in traffic on the motor alone, and it recharges its own battery while you drive and brake. That is where the claimed {f:gv.alphaplus-sh.eff} comes from.',
   'पेट्रोल इंजन और इलेक्ट्रिक मोटर मिलकर काम करते हैं। गाड़ी सिर्फ़ मोटर पर चल पड़ती है और ट्रैफ़िक में धीरे-धीरे चल सकती है, और चलते व ब्रेक लगाते समय अपनी बैटरी खुद चार्ज करती है। इसी से {f:gv.alphaplus-sh.eff} का दावा आता है।');
 I('hybrid.plug', 'hybrid', {},
-  ['Do I need to plug it in?', 'does the hybrid need charging', 'do i have to charge the hybrid', 'is there a charging cable', 'where do i charge the hybrid'],
+  ['Do I need to plug it in?', 'does the hybrid need charging', 'does the hybrid need plugging in', 'do i have to charge the hybrid', 'is there a charging cable', 'where do i charge the hybrid'],
   ['क्या इसे चार्जिंग पर लगाना पड़ता है?', 'hybrid ko charge karna padta hai kya', 'क्या हाइब्रिड को प्लग करना होता है', 'charging kaha karni hogi', 'क्या चार्जर चाहिए'],
   'No. A strong hybrid charges its own battery from the engine and from braking. You fill it with petrol like any other car and there is no cable.',
   'नहीं। स्ट्रॉन्ग हाइब्रिड अपनी बैटरी इंजन और ब्रेकिंग से खुद चार्ज करता है। इसमें बाकी गाड़ियों की तरह पेट्रोल भरवाइए, कोई केबल नहीं लगती।');
@@ -103,7 +103,7 @@ I('airbags', 'safety', {},
   '{c:pickName} में {c:pickAirbags} हैं। अगर कहीं और अलग संख्या दिखे, तो देख लें कि वह किस वेरिएंट और किस साल की बात है।');
 I('nexon.brezza.safety', 'safety', { rivals: ['nx'], chip: true },
   ['Is the Nexon safer than the Brezza?', 'nexon vs brezza safety', 'which is safer nexon or brezza', 'brezza safety rating vs nexon', 'tata is safer than maruti'],
-  ['क्या Nexon, Brezza से ज़्यादा सुरक्षित है?', 'nexon ya brezza kaun safe hai', 'Brezza और Nexon की सेफ़्टी', 'tata zyada safe hai kya', 'सेफ़्टी में कौन आगे है'],
+  ['क्या Nexon, Brezza से ज़्यादा सुरक्षित है?', 'nexon ya brezza kaun safe hai', 'Nexon ज़्यादा सुरक्षित है क्या', 'Brezza और Nexon की सेफ़्टी', 'tata zyada safe hai kya', 'सेफ़्टी में कौन आगे है'],
   'On the published tests they are level today. The Nexon has {f:nx.crash}; the Brezza now has {f:brz.crash}. Both have {f:nx.airbags} as standard. The Nexon earned its rating earlier, which is why it is better known for safety.',
   'छपे हुए टेस्ट में आज दोनों बराबर हैं। Nexon के पास {f:nx.crash} है; Brezza के पास अब {f:brz.crash} है। दोनों में {f:nx.airbags} स्टैंडर्ड हैं। Nexon को रेटिंग पहले मिली थी, इसीलिए सेफ़्टी के लिए उसका नाम ज़्यादा है।');
 I('victoris.safety', 'safety', { models: ['vic'] },
@@ -114,7 +114,7 @@ I('victoris.safety', 'safety', { models: ['vic'] },
 
 // ---- Practical ----
 I('boot', 'practical', {},
-  ['How big is the boot?', 'boot space', 'luggage space', 'how many bags fit', 'dickey space'],
+  ['How big is the boot?', 'boot space', 'what is the boot space', 'luggage space', 'how many bags fit', 'dickey space'],
   ['बूट कितना बड़ा है?', 'boot space kitna hai', 'डिक्की में कितनी जगह है', 'saman kitna aayega', 'लगेज स्पेस'],
   'The {c:pickName} is listed at {c:pickBoot}. On hybrid and CNG versions the battery or tank can take some of that, so open the boot on the car you plan to buy.',
   '{c:pickName} के लिए {c:pickBoot} दर्ज है। हाइब्रिड और CNG में बैटरी या टंकी कुछ जगह ले सकती है, इसलिए जो गाड़ी लेनी है उसका बूट खोलकर ज़रूर देखें।');
@@ -166,7 +166,7 @@ I('promise.what', 'programme', { chip: true },
   'It is a proposal now in pilot design: a guaranteed buyback at {f:prog.promise.pct} of the net ex-showroom price, at {f:prog.promise.years} or {f:prog.promise.km}, backed by an insurer. It copies terms Maruti Suzuki already offers on the e Vitara.',
   'यह एक प्रस्ताव है, जिसका पायलट तैयार हो रहा है: {f:prog.promise.years} या {f:prog.promise.km} पर, नेट एक्स-शोरूम कीमत के {f:prog.promise.pct} पर गारंटीड बायबैक, जिसके पीछे बीमा कंपनी होगी। यह वही शर्तें हैं जो Maruti Suzuki पहले से e Vitara पर देती है।');
 I('promise.catch', 'programme', {},
-  ['What is the catch with the Promise?', 'conditions on buyback', 'buyback terms and conditions', 'hidden conditions', 'when does the promise not apply'],
+  ['What is the catch with the Promise?', 'conditions on buyback', 'catches in the promise', 'buyback terms and conditions', 'hidden conditions', 'when does the promise not apply'],
   ['Promise में शर्तें क्या हैं?', 'buyback ki shartein kya hai', 'इसमें कोई पेच तो नहीं', 'promise kab lagu nahi hoga', 'बायबैक के नियम'],
   'Three things to know. It is a proposal, not yet on sale. The distance limit is {f:prog.promise.km}, and condition terms would apply as with any buyback. And on the e Vitara the matching scheme is paid for, so ask your product expert how the pilot is priced.',
   'तीन बातें जान लें। यह प्रस्ताव है, अभी बिक्री में नहीं है। दूरी की सीमा {f:prog.promise.km} है, और हर बायबैक की तरह गाड़ी की हालत की शर्तें लागू होंगी। और e Vitara पर ऐसी स्कीम के पैसे लगते हैं, तो अपने प्रोडक्ट एक्सपर्ट से पूछें कि पायलट में इसका दाम क्या है।');
@@ -177,7 +177,7 @@ I('promise.safetynet', 'programme', {},
   'इसे अंदाज़ा नहीं, न्यूनतम सीमा समझिए। हमारा मॉडल लगभग {f:resale.residual} की उम्मीद करता है, यानी आम बाज़ार में आपको गारंटी वाले {f:prog.promise.pct} से ज़्यादा मिलेगा। Promise तब काम आता है जब बाज़ार आपके खिलाफ़ चला जाए।');
 I('pledge.what', 'programme', { chip: true },
   ['What is the Service Pledge?', 'service promise', 'what if the repair is not fixed', 'loaner car', 'courtesy car during repair'],
-  ['Service Pledge क्या है?', 'service pledge kya hai', 'अगर रिपेयर ठीक न हो तो', 'loaner car milegi kya', 'सर्विस के दौरान दूसरी गाड़ी'],
+  ['Service Pledge क्या है?', 'service pledge kya hai', 'सर्विस प्लेज क्या है', 'अगर रिपेयर ठीक न हो तो', 'loaner car milegi kya', 'सर्विस के दौरान दूसरी गाड़ी'],
   'A proposal in pilot design: your car is fixed the first time, or you get a loaner car within {f:prog.pledge.hours} when a repeat repair is needed. The outlet can decide goodwill on the spot without sending it up the line.',
   'यह प्रस्ताव है, जिसका पायलट तैयार हो रहा है: आपकी गाड़ी पहली बार में ठीक होगी, और अगर दोबारा रिपेयर की ज़रूरत पड़ी तो {f:prog.pledge.hours} के अंदर लोनर कार मिलेगी। गुडविल का फ़ैसला आउटलेट वहीं कर सकता है, ऊपर भेजे बिना।');
 I('pledge.why', 'programme', {},
@@ -188,7 +188,7 @@ I('pledge.why', 'programme', {},
 I('weekend.what', 'programme', { chip: true },
   ['What is Weekend Ownership?', 'long test drive', 'can i take the car home', 'two day test drive', 'test drive for a weekend'],
   ['Weekend Ownership क्या है?', 'weekend ownership kya hai', 'क्या गाड़ी घर ले जा सकता हूँ', 'lambi test drive milegi kya', 'दो दिन की टेस्ट ड्राइव'],
-  'A proposal in pilot design: you keep the car for {f:prog.weekend.hours} instead of a {f:prog.weekend.loop} loop, long enough for a highway run and your own parking. It is the fairest way to judge a hybrid.',
+  'A proposal in pilot design: you keep the car for {f:prog.weekend.hours} instead of a loop of {f:prog.weekend.loop}, long enough for a highway run and your own parking. It is the fairest way to judge a hybrid.',
   'यह प्रस्ताव है, जिसका पायलट तैयार हो रहा है: {f:prog.weekend.loop} के चक्कर की जगह गाड़ी {f:prog.weekend.hours} आपके पास रहती है, ताकि आप हाईवे पर चला सकें और अपनी पार्किंग में लगाकर देख सकें। हाइब्रिड को परखने का यही सबसे सही तरीका है।');
 I('weekend.cost', 'programme', { route: 'expert' },
   ['Does Weekend Ownership cost anything?', 'is the weekend drive free', 'deposit for weekend ownership', 'charges for long test drive', 'who pays for fuel on the weekend drive'],
