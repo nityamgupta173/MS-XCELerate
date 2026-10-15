@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXA SUV discovery kiosk</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+body{margin:0}
+a{color:#D4B47C}a:hover{color:#E9D3A6}
+button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:disabled{cursor:not-allowed}
+</style>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#05080F}
+#dc-viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#dc-stage{flex:none;transform-origin:center center}
+#dc-all{position:fixed;left:12px;bottom:12px;z-index:10;padding:6px 12px;border-radius:14px;background:rgba(18,31,56,.85);color:#C9D1DF;font:600 12px 'Source Sans 3',sans-serif;text-decoration:none}
+#dc-all:hover{color:#F4F0E8}
+</style>
+</head>
+<body>
+<template id="dc-template">
+<div onPointerDown="{{ touch }}" style="position: relative; width: 1080px; height: 1920px; box-sizing: border-box; background: #0B1426; color: #F4F0E8; font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow: hidden; user-select: none">
+
+<header style="height: 128px; box-sizing: border-box; padding: 0 72px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #22324F">
+<div style="display: flex; align-items: baseline; gap: 20px">
+<span style="font-family: Outfit, sans-serif; font-weight: 600; font-size: 40px; letter-spacing: 0.32em; color: {{ accent }}">NEXA</span>
+<span style="font-family: Outfit, sans-serif; font-size: 26px; color: #AEB8CB">SUV Discovery</span>
+</div>
+<sc-if value="{{ showRestart }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ restart }}" style="height: 88px; padding: 0 36px; border-radius: 44px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 26px; font-weight: 600">Start over</button>
+</sc-if>
+</header>
+
+<sc-if value="{{ showProgress }}" hint-placeholder-val="{{ false }}">
+<nav aria-label="Progress" style="padding: 28px 72px 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px">
+<sc-for list="{{ steps }}" as="st" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="height: 8px; border-radius: 4px; background: {{ st.bar }}"></div>
+<span style="font-size: 21px; font-weight: 600; color: {{ st.fg }}">{{ st.label }}</span>
+</div>
+</sc-for>
+</nav>
+</sc-if>
+
+<main style="flex: 1; min-height: 0; display: flex; flex-direction: column">
+
+<sc-if value="{{ isAttract }}" hint-placeholder-val="{{ true }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 40px; padding: 48px 72px 48px">
+<img src="assets/img/attract-hero.jpg" alt="" style="display: block; width: 936px; height: 700px; object-fit: cover; border-radius: 28px">
+<h1 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 92px; line-height: 1.02; letter-spacing: -0.02em">Shortlisting an SUV?<br>Compare it honestly.</h1>
+<p style="margin: 0; font-size: 36px; line-height: 1.35; color: #C9D1DF">Tell us what else you are considering. In two minutes you will see where the Grand Vitara wins, and where it does not.</p>
+<sc-if value="{{ wiped }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 18px 28px; border-radius: 20px; background: #1A2A48; font-size: 26px; color: #C9D1DF">We cleared the last visit from this screen for privacy.</p>
+</sc-if>
+<button onClick="{{ start }}" style="margin-top: auto; height: 136px; border: 0; border-radius: 68px; background: {{ accent }}; color: #0B1426; font-size: 42px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 20px">Start
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</button>
+<p style="margin: 0; text-align: center; font-size: 24px; color: #AEB8CB">No sign-in. Nothing is stored unless you choose to send it to your phone.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{ isRival }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 52px 72px 48px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 68px; line-height: 1.05">What else is on your list?</h2>
+<p style="margin: 0 0 12px; font-size: 32px; color: #C9D1DF">Pick the one you are most seriously considering.</p>
+<sc-for list="{{ rivals }}" as="r" hint-placeholder-count="5">
+<button onClick="{{ r.pick }}" aria-pressed="{{ r.on }}" style="min-height: 150px; box-sizing: border-box; padding: 24px 40px; border-radius: 28px; border: 3px solid {{ r.bd }}; background: {{ r.bg }}; color: #F4F0E8; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 24px">
+<span style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: Outfit, sans-serif; font-size: 38px; font-weight: 600">{{ r.name }}</span>
+<span style="font-size: 26px; color: #AEB8CB">{{ r.sub }}</span>
+</span>
+<sc-if value="{{ r.on }}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: {{ accent }}; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+</sc-if>
+</button>
+</sc-for>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toAttract }}" style="height: 120px; border-radius: 60px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back</button>
+<button onClick="{{ toNeeds }}" disabled="{{ rivalNextOff }}" style="height: 120px; border-radius: 60px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700; opacity: {{ rivalNextOpacity }}">Next</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isNeeds }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 44px; padding: 56px 72px 48px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 68px; line-height: 1.05">Three quick questions</h2>
+<fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 20px">
+<legend style="padding: 0; margin-bottom: 20px; font-size: 34px; font-weight: 600">How far do you drive in a month?</legend>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px">
+<sc-for list="{{ kmOpts }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="min-height: 120px; padding: 16px; border-radius: 24px; border: 3px solid {{ o.bd }}; background: {{ o.bg }}; color: #F4F0E8; font-size: 30px; font-weight: 600">{{ o.label }}</button>
+</sc-for>
+</div>
+</fieldset>
+<fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 20px">
+<legend style="padding: 0; margin-bottom: 20px; font-size: 34px; font-weight: 600">What matters most?</legend>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px">
+<sc-for list="{{ prioOpts }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="min-height: 120px; padding: 16px; border-radius: 24px; border: 3px solid {{ o.bd }}; background: {{ o.bg }}; color: #F4F0E8; font-size: 30px; font-weight: 600">{{ o.label }}</button>
+</sc-for>
+</div>
+</fieldset>
+<fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 20px">
+<legend style="padding: 0; margin-bottom: 20px; font-size: 34px; font-weight: 600">Who usually rides with you?</legend>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px">
+<sc-for list="{{ riderOpts }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="min-height: 120px; padding: 16px; border-radius: 24px; border: 3px solid {{ o.bd }}; background: {{ o.bg }}; color: #F4F0E8; font-size: 30px; font-weight: 600">{{ o.label }}</button>
+</sc-for>
+</div>
+</fieldset>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toRival }}" style="height: 120px; border-radius: 60px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back</button>
+<button onClick="{{ toMatch }}" disabled="{{ needsNextOff }}" style="height: 120px; border-radius: 60px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700; opacity: {{ needsNextOpacity }}">See my match</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 28px; padding: 44px 72px 48px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 26px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: {{ accent }}">{{ rec.eyebrow }}</span>
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 72px; line-height: 1.04">{{ rec.title }}</h2>
+<span style="font-size: 28px; line-height: 1.35; color: #C9D1DF">{{ rec.sub }}</span>
+</div>
+<sc-if value="{{ rec.imgGv }}" hint-placeholder-val="{{ true }}">
+<img src="assets/img/match-grand-vitara.jpg" alt="Grand Vitara strong hybrid, side view" style="display: block; width: 936px; height: 320px; object-fit: cover; border-radius: 28px; background: #E6E9EC">
+</sc-if>
+<sc-if value="{{ rec.imgVic }}" hint-placeholder-val="{{ false }}">
+<img src="assets/img/match-victoris.jpg" alt="Victoris strong hybrid, three-quarter front view" style="display: block; width: 936px; height: 320px; object-fit: cover; border-radius: 28px; background: #13245E">
+</sc-if>
+<sc-if value="{{ rec.imgRoad }}" hint-placeholder-val="{{ false }}">
+<img src="assets/img/match-highway.jpg" alt="" style="display: block; width: 936px; height: 320px; object-fit: cover; border-radius: 28px">
+</sc-if>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px">
+<sc-for list="{{ rec.reasons }}" as="rs" hint-placeholder-count="3">
+<li style="display: flex; gap: 22px; align-items: flex-start; padding: 24px 30px; border-radius: 24px; background: #121F38">
+<sc-if value="{{ rs.caution }}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" style="flex: none; margin-top: 2px; fill: none; stroke: #9DB7E8; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5v.01"></path></svg>
+</sc-if>
+<sc-if value="{{ rs.plain }}" hint-placeholder-val="{{ true }}">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" style="flex: none; margin-top: 2px; fill: none; stroke: {{ accent }}; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+</sc-if>
+<span style="font-size: 28px; line-height: 1.38">{{ rs.text }}
+<sc-if value="{{ rs.proposed }}" hint-placeholder-val="{{ false }}"><span style="display: inline-block; margin-left: 10px; padding: 2px 14px; border-radius: 16px; border: 1px solid #5D6F92; font-size: 20px; font-weight: 600; color: #C9D1DF; vertical-align: middle">Proposed</span></sc-if>
+</span>
+</li>
+</sc-for>
+</ul>
+<sc-if value="{{ rec.hasAlt }}" hint-placeholder-val="{{ false }}">
+<div style="padding: 24px 30px; border-radius: 24px; border: 2px solid #2A3B5C; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 22px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #AEB8CB">Also worth a look</span>
+<span style="font-size: 28px; line-height: 1.38">{{ rec.alt }}</span>
+</div>
+</sc-if>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toNeeds }}" style="height: 120px; border-radius: 60px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back</button>
+<button onClick="{{ toCompare }}" style="height: 120px; border-radius: 60px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Compare in detail</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isCompare }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 20px; padding: 32px 72px 40px">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px" role="group" aria-label="Compare with">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="height: 96px; border-radius: 48px; border: 3px solid {{ t.bd }}; background: {{ t.bg }}; color: #F4F0E8; font-size: 27px; font-weight: 600">vs {{ t.name }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ cmp.hasVariants }}" hint-placeholder-val="{{ false }}">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px" role="group" aria-label="Variant">
+<sc-for list="{{ variantOpts }}" as="vo" hint-placeholder-count="2">
+<button onClick="{{ vo.pick }}" aria-pressed="{{ vo.on }}" style="height: 88px; border-radius: 44px; border: 3px solid {{ vo.bd }}; background: {{ vo.bg }}; color: #F4F0E8; font-size: 26px; font-weight: 600">{{ vo.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+<div style="border-radius: 24px; background: #121F38; overflow: hidden">
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 16px; padding: 0 28px; height: 68px; align-items: center; background: #1A2A48; font-family: Outfit, sans-serif; font-size: 26px; font-weight: 600">
+<span style="font-family: 'Source Sans 3', sans-serif; font-size: 21px; font-weight: 600; color: #AEB8CB">{{ cmp.basis }}</span>
+<span style="color: {{ accent }}">Grand Vitara</span>
+<span>{{ cmp.name }}</span>
+</div>
+<sc-for list="{{ cmp.rows }}" as="row" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 16px; padding: 12px 28px; min-height: 70px; box-sizing: border-box; align-items: center; border-top: 1px solid #22324F">
+<span style="font-size: 23px; color: #AEB8CB; display: flex; flex-direction: column; gap: 4px">{{ row.label }}
+<sc-if value="{{ row.proposed }}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; padding: 0 12px; border-radius: 14px; border: 1px solid #5D6F92; font-size: 18px; font-weight: 600; color: #C9D1DF">Proposed</span></sc-if>
+</span>
+<span style="font-size: 25px; font-weight: {{ row.gvWeight }}">{{ row.gv }}</span>
+<span style="font-size: 25px; font-weight: {{ row.themWeight }}">{{ row.them }}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin: -4px 0 0; font-size: 19px; line-height: 1.4; color: #AEB8CB">Bold marks the better figure. *Claimed (ARAI) efficiency at Delhi petrol ₹102.12/l, 11 Oct 2026. Ex-showroom Delhi, Aug–Oct 2026. Rows marked Proposed are programme features under pilot.</p>
+<div style="padding: 24px 30px; border-radius: 24px; border: 2px solid {{ accent }}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 22px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: {{ accent }}">The honest read</span>
+<span style="font-size: 27px; line-height: 1.38">{{ cmp.honest }}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<button onClick="{{ toAsk }}" style="min-height: 112px; border-radius: 24px; border: 2px solid #2A3B5C; background: #121F38; color: #F4F0E8; font-size: 27px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 14px">
+<svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: {{ accent }}; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"></path></svg>
+Ask a question</button>
+<button onClick="{{ toCosts }}" style="min-height: 112px; border-radius: 24px; border: 2px solid #2A3B5C; background: #121F38; color: #F4F0E8; font-size: 27px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 14px">
+<svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: {{ accent }}; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M22 20H2"></path></svg>
+Running costs</button>
+<button onClick="{{ toPromises }}" style="min-height: 112px; border-radius: 24px; border: 2px solid #2A3B5C; background: #121F38; color: #F4F0E8; font-size: 27px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 14px">
+<svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: {{ accent }}; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"></path><path d="M8.5 12l2.5 2.5 4.5-5"></path></svg>
+The promises</button>
+</div>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toMatch }}" style="height: 116px; border-radius: 58px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back</button>
+<button onClick="{{ toHandoff }}" style="height: 116px; border-radius: 58px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Take this with me</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isAsk }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 44px 72px 40px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 64px; line-height: 1.05">Ask a question</h2>
+<p style="margin: 0; font-size: 27px; color: #C9D1DF">Answers come from a checked list of facts. Tap a question.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<sc-for list="{{ chips }}" as="c" hint-placeholder-count="12">
+<button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="min-height: 96px; padding: 12px 24px; border-radius: 22px; border: 3px solid {{ c.bd }}; background: {{ c.bg }}; color: #F4F0E8; font-size: 26px; font-weight: 600; line-height: 1.2; text-align: left">{{ c.q }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ hasChip }}" hint-placeholder-val="{{ false }}">
+<div style="padding: 28px 32px; border-radius: 24px; background: #1A2A48; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 28px; line-height: 1.42">{{ chipAnswer }}</span>
+<span style="font-size: 20px; color: #AEB8CB">{{ chipSource }}</span>
+</div>
+</sc-if>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toCompare }}" style="height: 116px; border-radius: 58px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back to comparison</button>
+<button onClick="{{ toHandoff }}" style="height: 116px; border-radius: 58px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Take this with me</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isCosts }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 26px; padding: 44px 72px 40px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 64px; line-height: 1.05">Running costs</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px" role="group" aria-label="Compare with">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="height: 92px; border-radius: 46px; border: 3px solid {{ t.bd }}; background: {{ t.bg }}; color: #F4F0E8; font-size: 27px; font-weight: 600">vs {{ t.name }}</button>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px">
+<div style="padding: 22px 26px; border-radius: 24px; background: #121F38; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 25px; color: #AEB8CB">Distance a month</span>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<button onClick="{{ kmDown }}" aria-label="Less distance" style="width: 96px; height: 96px; border-radius: 48px; border: 2px solid #3A4D72; background: transparent; color: #F4F0E8; font-size: 44px; font-weight: 600">−</button>
+<span style="font-family: Outfit, sans-serif; font-size: 44px; font-weight: 600">{{ cost.kmLabel }}</span>
+<button onClick="{{ kmUp }}" aria-label="More distance" style="width: 96px; height: 96px; border-radius: 48px; border: 2px solid #3A4D72; background: transparent; color: #F4F0E8; font-size: 44px; font-weight: 600">+</button>
+</div>
+</div>
+<div style="padding: 22px 26px; border-radius: 24px; background: #121F38; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 25px; color: #AEB8CB">Years you will keep it</span>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<button onClick="{{ yrDown }}" aria-label="Fewer years" style="width: 96px; height: 96px; border-radius: 48px; border: 2px solid #3A4D72; background: transparent; color: #F4F0E8; font-size: 44px; font-weight: 600">−</button>
+<span style="font-family: Outfit, sans-serif; font-size: 44px; font-weight: 600">{{ cost.yrLabel }}</span>
+<button onClick="{{ yrUp }}" aria-label="More years" style="width: 96px; height: 96px; border-radius: 48px; border: 2px solid #3A4D72; background: transparent; color: #F4F0E8; font-size: 44px; font-weight: 600">+</button>
+</div>
+</div>
+</div>
+<div style="padding: 26px 30px; border-radius: 24px; background: #121F38; display: flex; flex-direction: column; gap: 22px">
+<span style="font-size: 25px; color: #AEB8CB">Price plus fuel over {{ cost.yrLabel }}, ex-showroom, claimed efficiency</span>
+<sc-for list="{{ cost.bars }}" as="b" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; gap: 16px; font-size: 27px">
+<span style="font-weight: 600">{{ b.name }}</span>
+<span style="font-family: Outfit, sans-serif; font-weight: 600">{{ b.total }}</span>
+</div>
+<div style="height: 30px; border-radius: 8px; background: #0B1426; overflow: hidden">
+<div style="height: 30px; width: {{ b.w }}; background: {{ b.color }}; border-radius: 8px"></div>
+</div>
+<span style="font-size: 22px; color: #AEB8CB">{{ b.detail }}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding: 24px 30px; border-radius: 24px; border: 2px solid {{ accent }}; font-size: 28px; line-height: 1.4">{{ cost.verdict }}</div>
+<p style="margin: 0; font-size: 21px; line-height: 1.45; color: #AEB8CB">Petrol ₹102.12/l, Delhi, 11 Oct 2026. Owners report 20 to 24 km/l for the Grand Vitara strong hybrid against a 27.97 claim, and rivals fall short of their claims too. Insurance, service and resale are not included.</p>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toCompare }}" style="height: 116px; border-radius: 58px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back to comparison</button>
+<button onClick="{{ toHandoff }}" style="height: 116px; border-radius: 58px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Take this with me</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isPromises }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 44px 72px 40px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 64px; line-height: 1.05">After you buy</h2>
+<p style="margin: 0; font-size: 27px; line-height: 1.4; color: #C9D1DF">These are proposals being tested in a pilot. Your product expert will confirm the terms in writing.</p>
+<sc-for list="{{ promises }}" as="pr" hint-placeholder-count="3">
+<div style="padding: 30px 34px; border-radius: 26px; background: #121F38; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 16px">
+<span style="font-family: Outfit, sans-serif; font-size: 38px; font-weight: 600">{{ pr.title }}</span>
+<span style="padding: 2px 14px; border-radius: 16px; border: 1px solid #5D6F92; font-size: 20px; font-weight: 600; color: #C9D1DF">Proposed</span>
+</div>
+<span style="font-size: 29px; line-height: 1.4">{{ pr.terms }}</span>
+<span style="font-size: 24px; line-height: 1.45; color: #AEB8CB">{{ pr.why }}</span>
+</div>
+</sc-for>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toCompare }}" style="height: 116px; border-radius: 58px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back to comparison</button>
+<button onClick="{{ toHandoff }}" style="height: 116px; border-radius: 58px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Take this with me</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isHandoff }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 28px; padding: 48px 72px 44px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 64px; line-height: 1.05">Take this comparison with you</h2>
+<div style="padding: 32px 36px; border-radius: 28px; background: #121F38; display: flex; flex-direction: column; gap: 22px">
+<label for="kiosk-tel" style="font-size: 30px; font-weight: 600">Send it to my phone</label>
+<input id="kiosk-tel" type="tel" placeholder="10-digit mobile number" autocomplete="off" style="height: 104px; box-sizing: border-box; padding: 0 32px; border-radius: 20px; border: 2px solid #3A4D72; background: #0B1426; color: #F4F0E8; font-family: inherit; font-size: 34px">
+<label style="display: flex; gap: 22px; align-items: flex-start; font-size: 25px; line-height: 1.4; color: #C9D1DF; cursor: pointer">
+<input type="checkbox" checked="{{ consent }}" onChange="{{ toggleConsent }}" style="flex: none; width: 44px; height: 44px; margin: 0; accent-color: {{ accent }}">
+<span>I agree NEXA may keep this comparison and my number for 90 days to send it and arrange a test drive. I can delete it any time from the link. My number is not shared with the product expert until I book.</span>
+</label>
+</div>
+<div style="padding: 30px 36px; border-radius: 28px; background: #121F38; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 16px">
+<span style="font-size: 30px; font-weight: 600">Weekend Ownership: keep a Grand Vitara for 48 hours</span>
+<span style="padding: 2px 14px; border-radius: 16px; border: 1px solid #5D6F92; font-size: 20px; font-weight: 600; color: #C9D1DF">Proposed</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{ slots }}" as="sl" hint-placeholder-count="3">
+<button onClick="{{ sl.pick }}" aria-pressed="{{ sl.on }}" style="min-height: 100px; padding: 12px; border-radius: 22px; border: 3px solid {{ sl.bd }}; background: {{ sl.bg }}; color: #F4F0E8; font-size: 25px; font-weight: 600; line-height: 1.2">{{ sl.label }}</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ showArena }}" hint-placeholder-val="{{ false }}">
+<div style="padding: 28px 36px; border-radius: 28px; border: 2px solid {{ accent }}; display: flex; align-items: center; justify-content: space-between; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 29px; font-weight: 600">Victoris test drive at Arena</span>
+<span style="font-size: 24px; line-height: 1.4; color: #C9D1DF">Booked from here, at [NEAREST ARENA OUTLET]. This showroom is credited either way.</span>
+</div>
+<button onClick="{{ toggleArena }}" aria-pressed="{{ arenaRef }}" style="flex: none; height: 96px; padding: 0 30px; border-radius: 48px; border: 3px solid {{ arenaBd }}; background: {{ arenaBg }}; color: #F4F0E8; font-size: 25px; font-weight: 700">{{ arenaLabel }}</button>
+</div>
+</sc-if>
+<div style="display: flex; gap: 30px; align-items: center; padding: 24px 36px; border-radius: 28px; border: 2px solid #22324F">
+<svg role="img" aria-label="QR code placeholder" width="136" height="136" viewBox="0 0 37 37" style="flex: none; background: #F4F0E8; border-radius: 10px">
+<g style="fill: #0B1426">
+<rect x="3" y="3" width="9" height="9"></rect><rect x="25" y="3" width="9" height="9"></rect><rect x="3" y="25" width="9" height="9"></rect>
+<rect x="15" y="4" width="2" height="2"></rect><rect x="19" y="6" width="2" height="2"></rect><rect x="15" y="10" width="4" height="2"></rect><rect x="21" y="12" width="2" height="4"></rect>
+<rect x="14" y="15" width="3" height="3"></rect><rect x="19" y="18" width="4" height="2"></rect><rect x="25" y="15" width="2" height="2"></rect><rect x="29" y="18" width="4" height="2"></rect>
+<rect x="5" y="15" width="2" height="4"></rect><rect x="9" y="19" width="3" height="2"></rect><rect x="15" y="22" width="2" height="4"></rect><rect x="19" y="26" width="3" height="2"></rect>
+<rect x="25" y="23" width="4" height="2"></rect><rect x="30" y="27" width="2" height="5"></rect><rect x="16" y="30" width="5" height="2"></rect><rect x="25" y="30" width="3" height="2"></rect>
+</g>
+<g style="fill: #F4F0E8"><rect x="5" y="5" width="5" height="5"></rect><rect x="27" y="5" width="5" height="5"></rect><rect x="5" y="27" width="5" height="5"></rect></g>
+<g style="fill: #0B1426"><rect x="6.5" y="6.5" width="2" height="2"></rect><rect x="28.5" y="6.5" width="2" height="2"></rect><rect x="6.5" y="28.5" width="2" height="2"></rect></g>
+</svg>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 28px; font-weight: 600">Rather not give a number?</span>
+<span style="font-size: 24px; line-height: 1.4; color: #C9D1DF">Scan to open this comparison on your phone. No number needed. [QR PLACEHOLDER: links to the saved comparison]</span>
+</div>
+</div>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<button onClick="{{ toCompare }}" style="height: 116px; border-radius: 58px; border: 2px solid #2A3B5C; background: transparent; color: #F4F0E8; font-size: 32px; font-weight: 600">Back</button>
+<button onClick="{{ send }}" disabled="{{ sendOff }}" style="height: 116px; border-radius: 58px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700; opacity: {{ sendOpacity }}">Send to my phone</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<section style="flex: 1; display: flex; flex-direction: column; gap: 32px; padding: 88px 72px 52px">
+<svg aria-hidden="true" width="120" height="120" viewBox="0 0 24 24" style="fill: none; stroke: {{ accent }}; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 9"></path></svg>
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 80px; line-height: 1.04">Sent to your phone.</h2>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px">
+<sc-for list="{{ doneLines }}" as="dl" hint-placeholder-count="3">
+<li style="padding: 22px 28px; border-radius: 22px; background: #121F38; font-size: 29px; line-height: 1.4">{{ dl }}</li>
+</sc-for>
+</ul>
+<div style="display: flex; flex-direction: column; gap: 20px; margin-top: 12px">
+<a href="phone.html" style="height: 116px; border-radius: 58px; border: 2px solid {{ accent }}; color: #F4F0E8; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 32px; font-weight: 600">See what arrives on the phone
+<svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</a>
+<a href="tablet.html" style="height: 116px; border-radius: 58px; border: 2px solid {{ accent }}; color: #F4F0E8; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 32px; font-weight: 600">See the product expert's tablet
+<svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</a>
+</div>
+<button onClick="{{ restart }}" style="margin-top: auto; height: 120px; border-radius: 60px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Finish and clear this screen</button>
+</section>
+</sc-if>
+
+</main>
+
+<footer style="height: 76px; box-sizing: border-box; padding: 0 40px 0 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-top: 1px solid #22324F">
+<span style="font-size: 18px; color: #9AA6BC">Concept prototype for XCELerate 2026 · figures as published Aug–Oct 2026 · programme features are proposals · not an official Maruti Suzuki screen</span>
+<button onClick="{{ openSources }}" style="flex: none; height: 56px; padding: 0 24px; border-radius: 28px; border: 1px solid #3A4D72; background: transparent; color: #F4F0E8; font-size: 20px; font-weight: 600">Sources</button>
+</footer>
+
+<sc-if value="{{ showSources }}" hint-placeholder-val="{{ false }}">
+<div role="dialog" aria-label="Sources" style="position: absolute; inset: 0; background: rgba(5, 10, 20, 0.92); display: flex; flex-direction: column; justify-content: flex-end; padding: 72px">
+<div style="border-radius: 32px; background: #121F38; padding: 44px; display: flex; flex-direction: column; gap: 18px">
+<span style="font-family: Outfit, sans-serif; font-size: 48px; font-weight: 600">Where these figures come from</span>
+<ul style="margin: 0; padding-left: 28px; display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{ sources }}" as="so" hint-placeholder-count="10">
+<li style="font-size: 23px; line-height: 1.4; color: #C9D1DF">{{ so }}</li>
+</sc-for>
+</ul>
+<button onClick="{{ closeSources }}" style="margin-top: 12px; height: 112px; border-radius: 56px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 32px; font-weight: 700">Close</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showIdle }}" hint-placeholder-val="{{ false }}">
+<div role="dialog" aria-label="Still there?" style="position: absolute; inset: 0; background: rgba(5, 10, 20, 0.94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 96px; text-align: center">
+<span style="font-family: Outfit, sans-serif; font-size: 88px; font-weight: 600">Still there?</span>
+<span style="font-size: 34px; line-height: 1.4; color: #C9D1DF">For your privacy, this screen clears itself in {{ idleLeft }} seconds.</span>
+<button onClick="{{ stayHere }}" style="margin-top: 200px; width: 100%; height: 136px; border-radius: 68px; border: 0; background: {{ accent }}; color: #0B1426; font-size: 40px; font-weight: 700">Yes, keep going</button>
+</div>
+</sc-if>
+
+</div>
+</template>
+<div id="dc-viewport"><div id="dc-stage"></div></div>
+<a id="dc-all" href="index.html">All screens</a>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#D4B47C","options":["#D4B47C","#C9A15A","#E4C99B","#9DB7E8"]},"idleReset":{"editor":"boolean","default":true},"$preview":{"width":1080,"height":1920}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.fresh(false);
+    this.lastTouch = Date.now();
+  }
+
+  fresh(wiped) {
+    return { screen: 'attract', rival: null, km: null, priority: null, riders: null, tab: null, variant: 'top',
+      chip: null, consent: false, slot: null, arenaRef: false, costKm: null, years: 5,
+      sources: false, idleLeft: 0, wiped: !!wiped };
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => this.tick(), 1000);
+  }
+
+  componentWillUnmount() {
+    if (this.timer) clearInterval(this.timer);
+  }
+
+  tick() {
+    const s = this.state;
+    if ((this.props.idleReset ?? true) === false || s.screen === 'attract') {
+      if (s.idleLeft) this.setState({ idleLeft: 0 });
+      return;
+    }
+    const idle = (Date.now() - this.lastTouch) / 1000;
+    if (idle >= 60) {
+      this.lastTouch = Date.now();
+      this.setState(this.fresh(true));
+    } else if (idle >= 45) {
+      const left = Math.ceil(60 - idle);
+      if (left !== s.idleLeft) this.setState({ idleLeft: left });
+    } else if (s.idleLeft) {
+      this.setState({ idleLeft: 0 });
+    }
+  }
+
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent ?? '#D4B47C';
+    const PETROL = 102.12;
+    const inr = (n) => '₹' + Math.round(n).toLocaleString('en-IN');
+    const lakh = (n) => '₹' + (n / 100000).toFixed(2) + ' lakh';
+    const km2 = (n) => Math.round(n).toLocaleString('en-IN');
+    const look = (on) => ({ on: on, bg: on ? '#1F3157' : '#121F38', bd: on ? accent : '#2A3B5C' });
+    const opts = (list, key, extra) => list.map((o) => Object.assign({}, o, look(s[key] === o.id), {
+      pick: () => this.setState(Object.assign({ [key]: o.id }, extra || {}))
+    }));
+    const go = (screen) => () => this.setState({ screen: screen });
+
+    // ---------- Catalogue (ex-showroom Delhi, rupees; claimed ARAI km/l) ----------
+    const GV = { entry: { v: 'Delta+', p: 1668300 }, top: { v: 'Alpha+ (O)', p: 1962000 }, kmpl: 27.97 };
+    const R = {
+      hyryder: { name: 'Hyryder', entry: { v: 'S', p: 1718000 }, top: { v: 'V', p: 1999000 }, kmpl: 27.97, variants: true },
+      creta: { name: 'Creta', top: { v: 'King CVT', p: 1869000 }, kmpl: 17.7, variants: false },
+      seltos: { name: 'Seltos', top: { v: 'GTX A iVT', p: 1981901 }, kmpl: 16.5, variants: false },
+      victoris: { name: 'Victoris', entry: { v: 'VXI', p: 1642900 }, top: { v: 'ZXI+ (O)', p: 1998900 }, kmpl: 28.65, variants: true }
+    };
+    const per1000 = (kmpl) => 1000 / kmpl * PETROL;
+
+    // ---------- Shortlist and needs ----------
+    const rivals = opts([
+      { id: 'hyryder', name: 'Toyota Urban Cruiser Hyryder', sub: 'Built alongside the Grand Vitara at Bidadi' },
+      { id: 'creta', name: 'Hyundai Creta', sub: 'Petrol, turbo petrol and diesel' },
+      { id: 'seltos', name: 'Kia Seltos', sub: 'Petrol, turbo petrol and diesel' },
+      { id: 'victoris', name: 'Maruti Suzuki Victoris', sub: 'Strong hybrid, sold at Maruti Suzuki Arena' },
+      { id: 'none', name: 'Not sure yet', sub: 'We will start with the closest match' }
+    ], 'rival', { tab: null });
+    const kmList = [
+      { id: 'low', label: 'Under 800 km', km: 600 },
+      { id: 'mid', label: '800 to 1,500 km', km: 1200 },
+      { id: 'high', label: 'Over 1,500 km', km: 2000 }
+    ];
+    const kmOpts = opts(kmList, 'km', { costKm: null });
+    const prioOpts = opts([
+      { id: 'cost', label: 'Low running cost' },
+      { id: 'safety', label: 'Safety' },
+      { id: 'resale', label: 'Resale and peace of mind' },
+      { id: 'power', label: 'Performance' }
+    ], 'priority');
+    const riderOpts = opts([
+      { id: 'two', label: 'Mostly one or two' },
+      { id: 'five', label: 'Family of four or five' },
+      { id: 'seven', label: 'Often six or seven' }
+    ], 'riders');
+    const kmpm = (kmList.find((o) => o.id === s.km) || { km: 1200 }).km;
+    const fuelLine = (kmpl, name) => 'At about ' + km2(kmpm) + ' km a month, fuel for the ' + name + ' costs about ' +
+      inr(kmpm / kmpl * PETROL) + ' on its claimed ' + kmpl + ' km/l.';
+
+    // ---------- Recommendation (changes with the answers) ----------
+    const cretaGap = R.creta.top.p < GV.top.p ? GV.top.p - R.creta.top.p : 0;
+    const cretaSavePerKm = (per1000(R.creta.kmpl) - per1000(GV.kmpl)) / 1000;
+    const cretaMonths = cretaGap / (cretaSavePerKm * kmpm);
+    const pledge = { text: 'Service Pledge: if a fault is not fixed on the first visit, you get a replacement car until it is.', proposed: true };
+    let rec;
+    if (s.riders === 'seven') {
+      rec = {
+        eyebrow: 'Honest answer', title: 'None of these SUVs seats seven',
+        sub: 'The Grand Vitara, Victoris, Hyryder, Creta and Seltos all seat five.',
+        reasons: [{ text: 'Ask the product expert about Maruti Suzuki models with six or seven seats before you compare further.', caution: true }],
+        img: '', alt: '', defTab: 'hyryder', match: 'none'
+      };
+    } else if (s.priority === 'power') {
+      rec = {
+        eyebrow: 'Honest answer', title: 'A turbo petrol may suit you better',
+        sub: 'The Creta and Seltos both offer a 1.5 turbo petrol; the Seltos turbo makes 160 hp.',
+        reasons: [
+          { text: 'The Grand Vitara strong hybrid is built for efficiency and a quiet drive, not outright pace.', caution: true },
+          { text: fuelLine(GV.kmpl, 'Grand Vitara') + ' On claimed figures the Creta petrol automatic uses ' + Math.round((GV.kmpl / R.creta.kmpl - 1) * 100) +
+            '% more fuel per kilometre, and the Seltos ' + Math.round((GV.kmpl / R.seltos.kmpl - 1) * 100) + '% more.' },
+          { text: 'Drive both before deciding: take a Grand Vitara home for 48 hours and compare it with a turbo petrol on your own roads.', proposed: true }
+        ],
+        img: 'road', alt: '',
+        defTab: s.rival === 'seltos' ? 'seltos' : 'creta', match: 'gv'
+      };
+    } else if (s.priority === 'safety') {
+      rec = {
+        eyebrow: 'Your match', title: 'Victoris Strong Hybrid',
+        sub: 'Sold at Maruti Suzuki Arena · ex-showroom ' + lakh(R.victoris.entry.p) + ' to ' + lakh(R.victoris.top.p) + ' (strong hybrid)',
+        reasons: [
+          { text: 'A published 5-star Bharat NCAP crash rating, and Level 2 driver assistance.' },
+          { text: fuelLine(R.victoris.kmpl, 'Victoris') },
+          { text: 'It is sold at Arena. Book a test drive from here: this showroom is credited either way, so nobody gains by steering you.' },
+          pledge
+        ],
+        img: 'victoris',
+        alt: 'The Grand Vitara Strong Hybrid, here at NEXA. Six airbags are standard; we found no published Bharat NCAP result for it as of October 2026.',
+        defTab: 'victoris', match: 'victoris'
+      };
+    } else {
+      const reasons = [{ text: fuelLine(GV.kmpl, 'Grand Vitara') }];
+      if (s.priority === 'resale') {
+        reasons.push({ text: 'Higher Ground Promise: a guaranteed buyback offer at 60% of the ex-showroom price at 3 years or 45,000 km.', proposed: true });
+        reasons.push({ text: 'In our sample of 37 used listings, Grand Vitaras sold at par with the Hyryder.' });
+      } else {
+        reasons.push({ text: 'Claimed 27.97 km/l: the same as the Hyryder, and well ahead of the Creta (17.7) and Seltos (16.5) petrol automatics.' });
+      }
+      let alt = '';
+      if (s.rival === 'hyryder') {
+        reasons.push({ text: 'The Hyryder is the same car from the same plant. The Grand Vitara is ' + inr(R.hyryder.entry.p - GV.entry.p) +
+          ' less at entry and ' + inr(R.hyryder.top.p - GV.top.p) + ' less at the top, ex-showroom.' });
+      } else if (s.rival === 'creta') {
+        if (cretaMonths > 60) {
+          reasons.push({ text: 'At about ' + km2(kmpm) + ' km a month, fuel savings take about ' + Math.round(cretaMonths / 12) +
+            ' years to recover the Creta’s ' + inr(cretaGap) + ' lower price. On cost alone, the Creta may suit you better.', caution: true });
+        } else {
+          reasons.push({ text: 'At about ' + km2(kmpm) + ' km a month, fuel savings recover the Creta’s ' + inr(cretaGap) +
+            ' lower price in about ' + Math.round(cretaMonths) + ' months.' });
+        }
+      } else if (s.rival === 'seltos') {
+        reasons.push({ text: 'Compared as automatics, the top Grand Vitara is ' + inr(R.seltos.top.p - GV.top.p) +
+          ' less than the Seltos GTX A and uses less fuel on claimed figures.' });
+      } else if (s.rival === 'victoris') {
+        alt = 'The Victoris at Arena: equally efficient, with a published 5-star Bharat NCAP rating. Book it from here; this showroom is credited either way.';
+      }
+      reasons.push(pledge);
+      rec = {
+        eyebrow: 'Your match', title: 'Grand Vitara Strong Hybrid',
+        sub: 'Here at NEXA · ex-showroom ' + lakh(GV.entry.p) + ' to ' + lakh(GV.top.p) + ' (strong hybrid)',
+        reasons: reasons, img: 'gv', alt: alt,
+        defTab: (s.rival && s.rival !== 'none') ? s.rival : 'hyryder', match: 'gv'
+      };
+    }
+    const recOut = {
+      eyebrow: rec.eyebrow, title: rec.title, sub: rec.sub, imgGv: rec.img === 'gv', imgVic: rec.img === 'victoris', imgRoad: rec.img === 'road', alt: rec.alt, hasAlt: !!rec.alt,
+      reasons: rec.reasons.map((r) => ({ text: r.text, proposed: !!r.proposed, caution: !!r.caution, plain: !r.caution }))
+    };
+
+    // ---------- Comparison ----------
+    const tabId = s.tab || rec.defTab;
+    const rv = R[tabId];
+    const vKey = rv.variants ? s.variant : 'top';
+    const gvV = rv.variants ? GV[vKey] : GV.top;
+    const rvV = rv[vKey];
+    const better = (a, b, lowerWins) => {
+      if (a === b) return ['600', '600'];
+      const aWins = lowerWins ? a < b : a > b;
+      return aWins ? ['700', '400'] : ['400', '700'];
+    };
+    const row = (label, gv, them, w, proposed) => ({ label: label, gv: gv, them: them, gvWeight: (w || ['400', '400'])[0], themWeight: (w || ['400', '400'])[1], proposed: !!proposed });
+    const fuelW = better(per1000(GV.kmpl), per1000(rv.kmpl), true);
+    const priceW = better(gvV.p, rvV.p, true);
+    const effRow = row('Claimed efficiency', GV.kmpl + ' km/l', rv.kmpl + ' km/l', better(GV.kmpl, rv.kmpl, false));
+    const fuelRow = row('Fuel per 1,000 km*', inr(per1000(GV.kmpl)), inr(per1000(rv.kmpl)), fuelW);
+    const priceRow = row('Ex-showroom, Delhi', lakh(gvV.p), lakh(rvV.p), priceW);
+    const variantRow = row('Variant compared', gvV.v, rvV.v);
+    const buyback = row('Guaranteed buyback', '60% at 3 yr / 45,000 km', 'Check with dealer', ['700', '400'], true);
+    const repair = row('Fault not fixed first time', 'Replacement car until fixed', 'Check with dealer', ['700', '400'], true);
+    const gap = Math.abs(gvV.p - rvV.p);
+    let rows, honest, basis;
+    if (tabId === 'hyryder') {
+      basis = vKey === 'entry' ? 'Entry strong hybrids' : 'Top strong hybrids';
+      rows = [row('Built at, powertrain', 'Bidadi, 1.5 strong hybrid', 'Bidadi, 1.5 strong hybrid'), variantRow, effRow, fuelRow, priceRow,
+        row('Standard warranty', '3 yr / 1 lakh km', '3 yr / 1 lakh km'), buyback, repair];
+      honest = 'The Hyryder’s advantage is the Toyota badge, which many buyers value. Otherwise it is the same car from the same line: the Grand Vitara ' +
+        gvV.v + ' is ' + inr(gap) + ' less ex-showroom and is the only one of the two with the buyback and the Service Pledge.';
+    } else if (tabId === 'creta') {
+      basis = 'Automatics, nearest price';
+      rows = [row('Powertrain', '1.5 strong hybrid', '1.5 petrol CVT'), variantRow, effRow, fuelRow, priceRow,
+        row('Other engines', '1.5 petrol, CNG, 4WD', '1.5 turbo petrol, 1.5 diesel'), buyback, repair];
+      honest = 'The Creta costs ' + inr(gap) + ' less up front and offers turbo-petrol and diesel engines. On claimed figures the Grand Vitara saves ' +
+        inr(per1000(R.creta.kmpl) - per1000(GV.kmpl)) + ' of fuel every 1,000 km, so it recovers the gap after about ' +
+        km2(Math.round(cretaGap / cretaSavePerKm / 100) * 100) + ' km.';
+    } else if (tabId === 'seltos') {
+      basis = 'Automatics, nearest price';
+      rows = [row('Powertrain', '1.5 strong hybrid', '1.5 petrol CVT'), variantRow, effRow, fuelRow, priceRow,
+        row('Other engines', '1.5 petrol, CNG, 4WD', '1.5 turbo petrol (160 hp), 1.5 diesel'), buyback, repair];
+      honest = 'The Seltos offers a 160 hp turbo petrol and a diesel, which the Grand Vitara does not. Compared as automatics, the Grand Vitara is ' +
+        inr(gap) + ' less ex-showroom and saves ' + inr(per1000(R.seltos.kmpl) - per1000(GV.kmpl)) + ' of fuel every 1,000 km on claimed figures.';
+    } else {
+      basis = vKey === 'entry' ? 'Entry strong hybrids' : 'Top strong hybrids';
+      rows = [row('Showroom', 'NEXA', 'Maruti Suzuki Arena'), variantRow, effRow, fuelRow, priceRow,
+        row('Bharat NCAP', 'No result found (Oct 2026)', '5 stars', ['400', '700']),
+        row('Guaranteed buyback', '60% at 3 yr / 45,000 km', 'Not part of the Promise', ['700', '400'], true),
+        row('Fault not fixed first time', 'Replacement car until fixed', 'Replacement car until fixed', ['600', '600'], true)];
+      honest = (vKey === 'entry'
+        ? 'The Victoris has a published 5-star Bharat NCAP rating and its strong hybrid starts ' + inr(gap) + ' lower. '
+        : 'The Victoris has a published 5-star Bharat NCAP rating and is slightly more efficient; the top Grand Vitara is ' + inr(gap) + ' less and carries the buyback. ') +
+        'If the Victoris suits you better, book it at Arena from here: this showroom is credited either way.';
+    }
+    const cmp = { name: rv.name, rows: rows, honest: honest, basis: basis, hasVariants: !!rv.variants };
+    const tabs = ['hyryder', 'creta', 'seltos', 'victoris'].map((id) => Object.assign({ name: R[id].name }, look(tabId === id), {
+      pick: () => this.setState({ tab: id })
+    }));
+    const variantOpts = [{ id: 'entry', label: 'Entry strong hybrid' }, { id: 'top', label: 'Top strong hybrid' }].map((o) =>
+      Object.assign({ label: o.label }, look(vKey === o.id), { pick: () => this.setState({ variant: o.id }) }));
+
+    // ---------- Running costs ----------
+    const cKm = s.costKm || kmpm;
+    const yrs = s.years;
+    const gvPerKm = PETROL / GV.kmpl;
+    const rvPerKm = PETROL / rv.kmpl;
+    const totGv = gvV.p + gvPerKm * cKm * 12 * yrs;
+    const totRv = rvV.p + rvPerKm * cKm * 12 * yrs;
+    const maxT = Math.max(totGv, totRv);
+    const bars = [
+      { name: 'Grand Vitara ' + gvV.v, total: lakh(totGv), w: (totGv / maxT * 100).toFixed(1) + '%', color: accent,
+        detail: lakh(gvV.p) + ' + fuel ' + inr(gvPerKm * cKm) + ' a month' },
+      { name: rv.name + ' ' + rvV.v, total: lakh(totRv), w: (totRv / maxT * 100).toFixed(1) + '%', color: '#9DB7E8',
+        detail: lakh(rvV.p) + ' + fuel ' + inr(rvPerKm * cKm) + ' a month' }
+    ];
+    let verdict;
+    if (gvV.p <= rvV.p && gvPerKm <= rvPerKm) {
+      verdict = 'The Grand Vitara costs less to buy and ' + (gvPerKm < rvPerKm ? 'less' : 'no more') + ' to run, so it is cheaper from day one.';
+    } else if (gvV.p >= rvV.p && gvPerKm >= rvPerKm) {
+      verdict = 'The ' + rv.name + ' costs less to buy and to run, on claimed figures.';
+    } else {
+      const pricier = gvV.p > rvV.p ? 'Grand Vitara' : rv.name;
+      const beKm = gap / Math.abs(gvPerKm - rvPerKm);
+      const beMonths = beKm / cKm;
+      verdict = 'The ' + pricier + ' costs ' + inr(gap) + ' more but saves ' + inr(Math.abs(gvPerKm - rvPerKm) * 1000) +
+        ' every 1,000 km, so it recovers the gap after about ' + km2(Math.round(beKm / 100) * 100) + ' km: ' +
+        (beMonths > 120 ? 'more than ten years at this distance.' : 'about ' + Math.round(beMonths) + ' months at this distance.');
+    }
+    const cost = { kmLabel: km2(cKm) + ' km', yrLabel: yrs + (yrs === 1 ? ' year' : ' years'), bars: bars, verdict: verdict };
+
+    // ---------- Questions ----------
+    const chipList = [
+      { id: 'same', q: 'Same car as the Hyryder?', a: 'On the hardware that matters, yes. Both are built at the Bidadi plant with the same 1.5 strong-hybrid powertrain and the same 3-year / 1 lakh km warranty. They differ in styling, features by variant, price, and what each showroom promises after you buy.', src: 'Toyota Kirloskar and Maruti Suzuki specifications.' },
+      { id: 'warranty', q: 'Is the Toyota warranty longer?', a: 'No. Since July 2024 both carry the same 3-year / 1 lakh km standard warranty. Some AI assistants still say otherwise.', src: 'Manufacturer warranty terms; our audit of AI answers, 21 Sep 2026.' },
+      { id: 'fuel', q: 'Fuel cost each month?', a: fuelLine(GV.kmpl, 'Grand Vitara') + ' Owners commonly report 20 to 24 km/l, which is ' + inr(kmpm / 24 * PETROL) + ' to ' + inr(kmpm / 20 * PETROL) + '.', src: 'Delhi petrol ₹102.12/l, The Hans India, 11 Oct 2026; our coding of about 125 owner reviews.' },
+      { id: 'real', q: 'Real-world mileage?', a: 'Owners in our review sample commonly report 20 to 24 km/l against the claimed 27.97. Rivals fall short too: Autocar India measured 12.26 km/l on a Seltos petrol CVT claimed at 16.5.', src: 'CarDekho owner reviews, Oct 2026; Autocar India road test.' },
+      { id: 'plug', q: 'Do I need to plug it in?', a: 'No. The strong hybrid charges its own battery from the engine and from braking. There is no charging cable.', src: 'Maruti Suzuki strong-hybrid specification.' },
+      { id: 'cng', q: 'Is there a CNG or 4WD version?', a: 'Yes, but not as a strong hybrid. CNG: Delta and Zeta manual, ' + lakh(1299700) + ' to ' + lakh(1460000) + '. 4WD: Alpha petrol automatic, ' + lakh(1804700) + ' to ' + lakh(1862600) + '.', src: 'Ex-showroom, Cars24 Grand Vitara price update, Aug 2026.' },
+      { id: 'safety', q: 'What is the crash rating?', a: 'The Victoris has a published 5-star Bharat NCAP rating. We found no published Bharat NCAP result for the Grand Vitara as of October 2026, so ask your product expert for the latest. Six airbags are standard on the Grand Vitara.', src: 'Autocar India on the Victoris Bharat NCAP result; searches of Bharat NCAP coverage, Oct 2026.' },
+      { id: 'fault', q: 'What if a fault is not fixed?', a: 'Service Pledge (proposed): if a fault is not fixed on the first visit, you get a replacement car within 24 hours until it is.', src: 'Programme proposal, under pilot.' },
+      { id: 'resale', q: 'What is it worth in 3 years?', a: 'Higher Ground Promise (proposed): a guaranteed buyback offer at 60% of the ex-showroom price at 3 years or 45,000 km, subject to an inspection. In our used-car sample a typical 3-year-old Grand Vitara was valued at about 82% of today\u2019s ex-showroom price, so this is a safety net.', src: 'Our analysis of 37 NCR used listings, Sep 2026.' },
+      { id: 'price', q: 'Why no on-road price or offers?', a: 'Prices and offers are set by your dealer, not by this screen. Your product expert will give you a written on-road quote.', src: 'Showroom policy.' },
+      { id: 'data', q: 'What happens to my data?', a: 'Nothing is stored unless you choose to send this to your phone. If you do, it is kept for 90 days and you can delete it any time from the link.', src: 'Consent notice under the Digital Personal Data Protection Act, 2023.' },
+      { id: 'other', q: 'Something else?', a: 'Your product expert will answer that. We have added “something else to ask” to your summary so they know to start there.', src: 'Passed to the product expert with your summary.' }
+    ];
+    const chips = chipList.map((c) => Object.assign({ q: c.q }, look(s.chip === c.id), {
+      pick: () => this.setState({ chip: s.chip === c.id ? null : c.id })
+    }));
+    const chosen = chipList.find((c) => c.id === s.chip);
+
+    // ---------- Promises ----------
+    const promises = [
+      { title: 'Higher Ground Promise', terms: 'A guaranteed buyback offer at 60% of the ex-showroom price at 3 years or 45,000 km, subject to an inspection.',
+        why: 'A safety net, not a bet: in our used-car sample a typical Grand Vitara of that age was valued at about 82% of today\u2019s ex-showroom price. It mirrors the terms Maruti Suzuki already offers on the e Vitara.' },
+      { title: 'Service Pledge', terms: 'If a fault is not fixed on the first visit, you get a replacement car within 24 hours until it is.',
+        why: 'Owners told us service is where loyalty breaks. Showrooms are scored on fixing faults first time and on keeping this pledge.' },
+      { title: 'Weekend Ownership', terms: 'Keep a Grand Vitara for 48 hours, including a highway run and your own commute.',
+        why: 'A 20-minute loop cannot show you what a strong hybrid does over a full tank.' }
+    ];
+
+    // ---------- Hand-off ----------
+    const slotList = [
+      { id: 'fri', label: 'Fri 6 pm to Sun 6 pm', done: 'Weekend Ownership requested for Friday 6 pm to Sunday 6 pm. The showroom will confirm by message.' },
+      { id: 'sat', label: 'Sat 10 am to Mon 10 am', done: 'Weekend Ownership requested for Saturday 10 am to Monday 10 am. The showroom will confirm by message.' },
+      { id: 'later', label: 'Not now', done: 'You can book Weekend Ownership from the link whenever you are ready.' }
+    ];
+    const slots = opts(slotList, 'slot');
+    const doneLines = ['Your comparison and the questions you asked are on your phone, kept for 90 days.',
+      (slotList.find((o) => o.id === s.slot) || slotList[2]).done];
+    if (s.arenaRef) doneLines.push('Victoris test drive requested at [NEAREST ARENA OUTLET]. This showroom is credited too.');
+    doneLines.push('[EXPERT NAME], your product expert, can see your shortlist and questions. Not your number.');
+    const showArena = rec.match === 'victoris' || s.rival === 'victoris' || tabId === 'victoris';
+
+    const sources = [
+      'Grand Vitara ex-showroom prices: Cars24 variant-wise price update, Aug 2026; top strong hybrid confirmed on CarDekho Delhi, 19 Sep 2026.',
+      'Hyryder, Victoris and Seltos ex-showroom prices: CarDekho New Delhi price pages, updated Oct 2026.',
+      'Creta King CVT ex-showroom price: Autocar India, 12 Oct 2026.',
+      'Claimed (ARAI) efficiency: manufacturer figures; Seltos via Gaadify, 22 Apr 2026.',
+      'Delhi petrol ₹102.12/l: The Hans India, 11 Oct 2026.',
+      'Victoris 5-star Bharat NCAP: Autocar India. Grand Vitara: no published Bharat NCAP result found, Oct 2026.',
+      'Owner-reported 20 to 24 km/l: our coding of about 125 Grand Vitara owner reviews on CarDekho, Oct 2026.',
+      'Seltos measured 12.26 km/l: Autocar India road test.',
+      'Resale parity and the 82% typical residual: our analysis of 37 NCR used listings, Sep 2026.',
+      'Buyback precedent: Maruti Suzuki e Vitara assured buyback, Feb 2026. Promise, Service Pledge and Weekend Ownership are our proposals, under pilot.',
+      'Photos: Grand Vitara and Victoris, Maruti Suzuki via CarDekho. Road scenes are AI-generated illustrations (Google Gemini), not real locations.'
+    ];
+
+    // ---------- Progress ----------
+    const stepOf = { rival: 0, needs: 1, match: 2, compare: 3, ask: 3, costs: 3, promises: 3, handoff: 4 };
+    const at = (s.screen in stepOf) ? stepOf[s.screen] : -1;
+    const steps = ['Your list', 'Your needs', 'Your match', 'Explore', 'Take it with you'].map((label, i) => ({
+      label: label, bar: i <= at ? accent : '#22324F', fg: i === at ? '#F4F0E8' : (i < at ? '#C9D1DF' : '#7F8BA3')
+    }));
+    const needsReady = !!(s.km && s.priority && s.riders);
+
+    return {
+      accent: accent,
+      touch: () => { this.lastTouch = Date.now(); if (this.state.idleLeft) this.setState({ idleLeft: 0 }); },
+      showRestart: s.screen !== 'attract',
+      showProgress: at >= 0,
+      steps: steps,
+      isAttract: s.screen === 'attract',
+      isRival: s.screen === 'rival',
+      isNeeds: s.screen === 'needs',
+      isMatch: s.screen === 'match',
+      isCompare: s.screen === 'compare',
+      isAsk: s.screen === 'ask',
+      isCosts: s.screen === 'costs',
+      isPromises: s.screen === 'promises',
+      isHandoff: s.screen === 'handoff',
+      isDone: s.screen === 'done',
+      wiped: s.wiped,
+      start: () => this.setState({ screen: 'rival', wiped: false }),
+      toAttract: go('attract'),
+      toRival: go('rival'),
+      toNeeds: go('needs'),
+      toMatch: go('match'),
+      toCompare: go('compare'),
+      toAsk: go('ask'),
+      toCosts: go('costs'),
+      toPromises: go('promises'),
+      toHandoff: go('handoff'),
+      send: () => { if (this.state.consent) this.setState({ screen: 'done' }); },
+      restart: () => { this.lastTouch = Date.now(); this.setState(this.fresh(false)); },
+      rivals: rivals,
+      rivalNextOff: !s.rival,
+      rivalNextOpacity: s.rival ? 1 : 0.4,
+      kmOpts: kmOpts,
+      prioOpts: prioOpts,
+      riderOpts: riderOpts,
+      needsNextOff: !needsReady,
+      needsNextOpacity: needsReady ? 1 : 0.4,
+      rec: recOut,
+      tabs: tabs,
+      variantOpts: variantOpts,
+      cmp: cmp,
+      cost: cost,
+      kmDown: () => this.setState({ costKm: Math.max(250, cKm - 250) }),
+      kmUp: () => this.setState({ costKm: Math.min(5000, cKm + 250) }),
+      yrDown: () => this.setState({ years: Math.max(1, yrs - 1) }),
+      yrUp: () => this.setState({ years: Math.min(7, yrs + 1) }),
+      chips: chips,
+      hasChip: !!chosen,
+      chipAnswer: chosen ? chosen.a : '',
+      chipSource: chosen ? 'Source: ' + chosen.src : '',
+      promises: promises,
+      consent: s.consent,
+      toggleConsent: () => this.setState({ consent: !this.state.consent }),
+      slots: slots,
+      showArena: showArena,
+      arenaRef: s.arenaRef,
+      arenaLabel: s.arenaRef ? 'Requested' : 'Add this',
+      arenaBg: s.arenaRef ? '#1F3157' : 'transparent',
+      arenaBd: s.arenaRef ? accent : '#3A4D72',
+      toggleArena: () => this.setState({ arenaRef: !this.state.arenaRef }),
+      sendOff: !s.consent,
+      sendOpacity: s.consent ? 1 : 0.4,
+      doneLines: doneLines,
+      sources: sources,
+      showSources: s.sources,
+      openSources: () => this.setState({ sources: true }),
+      closeSources: () => this.setState({ sources: false }),
+      showIdle: s.idleLeft > 0,
+      idleLeft: s.idleLeft,
+      stayHere: () => { this.lastTouch = Date.now(); this.setState({ idleLeft: 0 }); }
+    };
+  }
+}
+</script>
+<script src="js/react.production.min.js"></script>
+<script src="js/react-dom.production.min.js"></script>
+<script src="js/dc-lite.js"></script>
+</body>
+</html>

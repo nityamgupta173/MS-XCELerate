@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Product expert's tablet view</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#D4B47C}a:hover{color:#E9D3A6}
+button{font-family:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 1180px; height: 820px; box-sizing: border-box; background: #0B1426; color: #F4F0E8; font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="height: 72px; box-sizing: border-box; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #22324F">
+<div style="display: flex; align-items: baseline; gap: 16px">
+<span style="font-family: Outfit, sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.3em; color: {{ accent }}">NEXA</span>
+<span style="font-size: 16px; color: #AEB8CB">Product expert · [OUTLET NAME]</span>
+</div>
+<a href="Main.dc.html" style="font-size: 15px">Back to the kiosk</a>
+</header>
+
+<div style="flex: 1; min-height: 0; display: flex">
+<aside style="width: 330px; flex: none; box-sizing: border-box; padding: 24px 20px; border-right: 1px solid #22324F; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #AEB8CB">Kiosk sessions today (sample)</span>
+<sc-for list="{{ sessions }}" as="ss" hint-placeholder-count="3">
+<button onClick="{{ ss.pick }}" aria-pressed="{{ ss.on }}" style="min-height: 76px; padding: 12px 16px; border-radius: 14px; border: 2px solid {{ ss.bd }}; background: {{ ss.bg }}; color: #F4F0E8; text-align: left; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 16px; font-weight: 700">{{ ss.time }} · {{ ss.kiosk }}</span>
+<span style="font-size: 14px; color: #C9D1DF">{{ ss.headline }}</span>
+</button>
+</sc-for>
+<p style="margin: auto 0 0; font-size: 13px; line-height: 1.45; color: #9AA6BC">Only what the buyer chose to share. No phone number until the buyer confirms a booking.</p>
+</aside>
+
+<main style="flex: 1; min-width: 0; box-sizing: border-box; padding: 24px 32px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 14px; color: #AEB8CB">{{ cur.time }} · {{ cur.kiosk }}</span>
+<h1 style="margin: 0; font-family: Outfit, sans-serif; font-size: 30px; font-weight: 600">{{ cur.headline }}</h1>
+</div>
+<span style="padding: 6px 14px; border-radius: 16px; background: #1A2A48; font-size: 14px; font-weight: 600; color: #C9D1DF">Shared with consent</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<section style="padding: 18px 20px; border-radius: 16px; background: #121F38; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AEB8CB">What they told the kiosk</h2>
+<div style="display: grid; grid-template-columns: 130px 1fr; gap: 8px 12px; font-size: 16px">
+<span style="color: #AEB8CB">Considering</span><span>{{ cur.rival }}</span>
+<span style="color: #AEB8CB">Drives</span><span>{{ cur.km }}</span>
+<span style="color: #AEB8CB">Priority</span><span>{{ cur.priority }}</span>
+<span style="color: #AEB8CB">Riders</span><span>{{ cur.riders }}</span>
+<span style="color: #AEB8CB">Compared</span><span>{{ cur.compared }}</span>
+</div>
+</section>
+<section style="padding: 18px 20px; border-radius: 16px; background: #121F38; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AEB8CB">Questions they asked</h2>
+<sc-for list="{{ cur.questions }}" as="qq" hint-placeholder-count="2">
+<span style="font-size: 16px; padding: 8px 12px; border-radius: 10px; background: #1A2A48">{{ qq }}</span>
+</sc-for>
+<sc-if value="{{ noQuestions }}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 16px; color: #AEB8CB">None at the kiosk.</span>
+</sc-if>
+</section>
+</div>
+
+<section style="padding: 18px 20px; border-radius: 16px; border: 2px solid {{ accent }}; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{ accent }}">Suggested next step</h2>
+<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.4">
+<sc-for list="{{ cur.next }}" as="nx" hint-placeholder-count="3">
+<li>{{ nx }}</li>
+</sc-for>
+</ol>
+</section>
+
+<section style="padding: 16px 20px; border-radius: 16px; background: #121F38; display: flex; align-items: center; justify-content: space-between; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 16px; font-weight: 700">Weekend Ownership <span style="font-size: 12px; font-weight: 600; color: #C9D1DF; border: 1px solid #5D6F92; border-radius: 10px; padding: 1px 8px">Proposed</span></span>
+<span style="font-size: 15px; color: #C9D1DF">{{ slotText }}</span>
+</div>
+<sc-if value="{{ canConfirm }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ confirm }}" style="flex: none; height: 52px; padding: 0 24px; border: 0; border-radius: 26px; background: {{ accent }}; color: #0B1426; font-size: 16px; font-weight: 700">Confirm the slot</button>
+</sc-if>
+</section>
+<p style="margin: 0; font-size: 12px; color: #8793AA">Concept prototype for XCELerate 2026 · sample sessions · programme features are proposals · not an official Maruti Suzuki screen</p>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#D4B47C","options":["#D4B47C","#C9A15A","#E4C99B","#9DB7E8"]},"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 0, confirmed: {} };
+  }
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent ?? '#D4B47C';
+    const data = [
+      {
+        time: '11:42', kiosk: 'Kiosk 2', headline: 'Considering the Hyryder',
+        rival: 'Toyota Urban Cruiser Hyryder', km: '800 to 1,500 km a month', priority: 'Low running cost',
+        riders: 'Family of four or five', compared: 'vs Hyryder, vs Creta',
+        questions: ['Same car as the Hyryder?', 'Fuel cost each month?'],
+        slot: 'Fri 6 pm to Sun 6 pm',
+        next: [
+          'Offer the 48-hour slot they asked for before anything else.',
+          'Explain the Higher Ground Promise: the buyback is the clearest difference from the Hyryder.',
+          'Do not lead with discount: the top strong hybrid is already ₹37,000 below the Hyryder.'
+        ]
+      },
+      {
+        time: '11:20', kiosk: 'Kiosk 1', headline: 'Considering the Creta',
+        rival: 'Hyundai Creta', km: 'Over 1,500 km a month', priority: 'Performance',
+        riders: 'Mostly one or two', compared: 'vs Creta',
+        questions: ['Fuel cost each month?'],
+        slot: null,
+        next: [
+          'Agree that the Creta turbo is quicker, then offer a back-to-back drive.',
+          'At about 2,000 km a month, the fuel saving recovers the ₹93,000 price gap in about 22 months on claimed figures.',
+          'Do not lead with discount.'
+        ]
+      },
+      {
+        time: '10:58', kiosk: 'Kiosk 2', headline: 'Not sure yet',
+        rival: 'No rival named', km: 'Under 800 km a month', priority: 'Safety',
+        riders: 'Often six or seven', compared: 'vs Victoris',
+        questions: [],
+        slot: null,
+        next: [
+          'Be upfront that the Grand Vitara seats five.',
+          'If the Victoris suits better, book the Arena test drive from here: this outlet is credited either way.',
+          'Do not lead with discount.'
+        ]
+      }
+    ];
+    const sessions = data.map((d, i) => ({
+      time: d.time, kiosk: d.kiosk, headline: d.headline,
+      on: s.sel === i, bg: s.sel === i ? '#1F3157' : '#121F38', bd: s.sel === i ? accent : '#22324F',
+      pick: () => this.setState({ sel: i })
+    }));
+    const cur = data[s.sel];
+    const isConfirmed = !!s.confirmed[s.sel];
+    let slotText = 'Not requested at the kiosk. Offer it if the drive goes well.';
+    if (cur.slot && !isConfirmed) slotText = 'Requested: ' + cur.slot + '. Buyer number hidden until you confirm.';
+    if (cur.slot && isConfirmed) slotText = 'Confirmed: ' + cur.slot + '. Buyer notified by message; number now visible: [BUYER NUMBER].';
+    return {
+      accent: accent,
+      sessions: sessions,
+      cur: cur,
+      noQuestions: cur.questions.length === 0,
+      slotText: slotText,
+      canConfirm: !!cur.slot && !isConfirmed,
+      confirm: () => this.setState({ confirmed: Object.assign({}, this.state.confirmed, { [this.state.sel]: true }) })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Saved comparison on the buyer's phone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#D4B47C}a:hover{color:#E9D3A6}
+button{font-family:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0B1426; color: #F4F0E8; font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow-y: auto">
+
+<header style="padding: 20px 20px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #22324F">
+<span style="font-family: Outfit, sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.3em; color: {{ accent }}">NEXA</span>
+<span style="font-size: 13px; color: #AEB8CB">Saved from the showroom kiosk</span>
+</header>
+
+<main style="padding: 20px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 26px; line-height: 1.15">Grand Vitara vs Hyryder</h1>
+<span style="font-size: 14px; color: #AEB8CB">Your comparison · strong hybrid · Delhi prices</span>
+</div>
+
+<section aria-label="Comparison" style="border-radius: 16px; background: #121F38; overflow: hidden">
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; background: #1A2A48; font-size: 13px; font-weight: 700">
+<span></span><span style="color: {{ accent }}">Grand Vitara</span><span>Hyryder</span>
+</div>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
+<span style="color: #AEB8CB">Powertrain</span><span>Same 1.5 strong hybrid</span><span>Same 1.5 strong hybrid</span>
+</div>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
+<span style="color: #AEB8CB">Fuel / 1,000 km*</span><span>₹3,651</span><span>₹3,651</span>
+</div>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
+<span style="color: #AEB8CB">Top strong hybrid</span><span style="font-weight: 700">₹19.62 lakh</span><span>₹19.99 lakh</span>
+</div>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
+<span style="color: #AEB8CB">Warranty</span><span>3 yr / 1 lakh km</span><span>3 yr / 1 lakh km</span>
+</div>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
+<span style="color: #AEB8CB">Buyback</span><span style="font-weight: 700">60% at 3 yr</span><span>Check with dealer</span>
+</div>
+</section>
+<p style="margin: -8px 0 0; font-size: 12px; line-height: 1.4; color: #9AA6BC">*Claimed 27.97 km/l at ₹102.12/l, Delhi, 11 Oct 2026. Owners commonly report 20 to 24 km/l.</p>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-size: 18px; font-weight: 600">What NEXA promises <span style="font-family: 'Source Sans 3', sans-serif; font-size: 12px; font-weight: 600; color: #C9D1DF; border: 1px solid #5D6F92; border-radius: 10px; padding: 1px 8px; vertical-align: middle">Proposed</span></h2>
+<div style="padding: 14px 16px; border-radius: 14px; border: 1px solid #2A3B5C; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; font-weight: 700">Higher Ground Promise</span>
+<span style="font-size: 14px; line-height: 1.4; color: #C9D1DF">A guaranteed buyback offer at 60% of ex-showroom at 3 years or 45,000 km, subject to an inspection.</span>
+</div>
+<div style="padding: 14px 16px; border-radius: 14px; border: 1px solid #2A3B5C; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; font-weight: 700">Service Pledge</span>
+<span style="font-size: 14px; line-height: 1.4; color: #C9D1DF">If a fault is not fixed on the first visit, a replacement car until it is.</span>
+</div>
+</section>
+
+<sc-if value="{{ notBooked }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ book }}" style="height: 52px; border: 0; border-radius: 26px; background: {{ accent }}; color: #0B1426; font-size: 16px; font-weight: 700">Book Weekend Ownership (48 hours)</button>
+</sc-if>
+<sc-if value="{{ booked }}" hint-placeholder-val="{{ false }}">
+<div style="padding: 14px 16px; border-radius: 14px; background: #1A2A48; font-size: 14px; line-height: 1.4">Requested. The showroom will confirm your 48-hour slot by message.</div>
+</sc-if>
+<a href="#" style="height: 52px; border-radius: 26px; border: 2px solid #2A3B5C; color: #F4F0E8; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; font-weight: 600">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"></path></svg>
+Ask on WhatsApp
+</a>
+
+<section style="padding: 14px 16px; border-radius: 14px; background: #121F38; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; line-height: 1.45; color: #C9D1DF">Kept for 90 days, then deleted automatically. Your number is shared with the showroom only when you book.</span>
+<sc-if value="{{ notDeleted }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ del }}" style="align-self: flex-start; height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid #5D6F92; background: transparent; color: #F4F0E8; font-size: 14px; font-weight: 600">Delete my data now</button>
+</sc-if>
+<sc-if value="{{ deleted }}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 14px; font-weight: 600; color: {{ accent }}">Deleted. This link will stop working.</span>
+</sc-if>
+</section>
+
+<a href="Main.dc.html" style="font-size: 14px; text-align: center; padding: 12px 0">Back to the kiosk</a>
+<p style="margin: 0; font-size: 11px; line-height: 1.4; text-align: center; color: #8793AA">Concept prototype for XCELerate 2026 · not an official Maruti Suzuki screen</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#D4B47C","options":["#D4B47C","#C9A15A","#E4C99B","#9DB7E8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { booked: false, deleted: false };
+  }
+  renderVals() {
+    const s = this.state;
+    return {
+      accent: this.props.accent ?? '#D4B47C',
+      booked: s.booked,
+      notBooked: !s.booked,
+      deleted: s.deleted,
+      notDeleted: !s.deleted,
+      book: () => this.setState({ booked: true }),
+      del: () => this.setState({ deleted: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

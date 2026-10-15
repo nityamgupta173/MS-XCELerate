@@ -1,0 +1,113 @@
+/* Self-hosted from @fontsource (SIL Open Font License); see LICENSE.txt in each folder. */
+/* outfit-latin-400-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(outfit/files/outfit-latin-400-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-400-normal.woff) format('woff');
+}
+/* outfit-latin-500-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(outfit/files/outfit-latin-500-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-500-normal.woff) format('woff');
+}
+/* outfit-latin-600-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(outfit/files/outfit-latin-600-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-600-normal.woff) format('woff');
+}
+/* outfit-latin-700-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(outfit/files/outfit-latin-700-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-700-normal.woff) format('woff');
+}
+/* outfit-latin-ext-400-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(outfit/files/outfit-latin-ext-400-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-ext-400-normal.woff) format('woff');
+}
+/* outfit-latin-ext-500-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(outfit/files/outfit-latin-ext-500-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-ext-500-normal.woff) format('woff');
+}
+/* outfit-latin-ext-600-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(outfit/files/outfit-latin-ext-600-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-ext-600-normal.woff) format('woff');
+}
+/* outfit-latin-ext-700-normal */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(outfit/files/outfit-latin-ext-700-normal.woff2) format('woff2'), url(outfit/files/outfit-latin-ext-700-normal.woff) format('woff');
+}
+/* source-sans-3-latin-400-normal */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(source-sans-3/files/source-sans-3-latin-400-normal.woff2) format('woff2'), url(source-sans-3/files/source-sans-3-latin-400-normal.woff) format('woff');
+}
+/* source-sans-3-latin-600-normal */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(source-sans-3/files/source-sans-3-latin-600-normal.woff2) format('woff2'), url(source-sans-3/files/source-sans-3-latin-600-normal.woff) format('woff');
+}
+/* source-sans-3-latin-700-normal */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(source-sans-3/files/source-sans-3-latin-700-normal.woff2) format('woff2'), url(source-sans-3/files/source-sans-3-latin-700-normal.woff) format('woff');
+}
+/* source-sans-3-latin-ext-400-normal */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(source-sans-3/files/source-sans-3-latin-ext-400-normal.woff2) format('woff2'), url(source-sans-3/files/source-sans-3-latin-ext-400-normal.woff) format('woff');
+}
+/* source-sans-3-latin-ext-600-normal */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(source-sans-3/files/source-sans-3-latin-ext-600-normal.woff2) format('woff2'), url(source-sans-3/files/source-sans-3-latin-ext-600-normal.woff) format('woff');
+}
+/* source-sans-3-latin-ext-700-normal */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(source-sans-3/files/source-sans-3-latin-ext-700-normal.woff2) format('woff2'), url(source-sans-3/files/source-sans-3-latin-ext-700-normal.woff) format('woff');
+}

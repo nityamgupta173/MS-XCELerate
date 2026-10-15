@@ -1,137 +1,83 @@
-# Higher Ground Discovery: kiosk prototype v2
+# NEXA Discovery Kiosk: concept prototype
 
-A working exhibit for a Maruti Suzuki XCELerate 2026 entry. One codebase, one static deployment, six routes. **Concept prototype. Not an official Maruti Suzuki product.**
+Concept prototype for **Maruti Suzuki XCELerate 2026, B-Track** ("Rebuilding Aspiration in the SUV Portfolio"). It shows how the Higher Ground organisation would work on the showroom floor. The kiosk:
 
-| Route | Surface |
+- gives an honest comparison and says where the rival wins;
+- sends buyers to the Arena Victoris when it fits them better, with both showrooms credited;
+- hands a consented summary to the product expert.
+
+The technology supports the organisation design; it is not the point of it.
+
+Not an official Maruti Suzuki product or screen.
+
+## Screens
+
+| Page | What it is |
 |---|---|
-| `/demo` | Judge mode: every surface side by side, seven claims, three guided tours. `/` redirects here. |
-| `/kiosk?channel=nexa` (or `arena`, `pod`) | Floor kiosk, a fixed 1080 × 1920 canvas scaled to fit any screen |
-| `/m#<payload>` | Buyer's phone, opened by the kiosk's QR code |
-| `/expert` | Product expert's tablet |
-| `/council` | SUV Council dashboard (simulated pilot data, labelled) |
-| `/about` | Method, sources, prior art, economics, limitations |
+| `index.html` | Landing page linking the three screens |
+| `kiosk.html` | 43-inch portrait touch kiosk (1080×1920), scaled to fit the window |
+| `phone.html` | What arrives on the buyer's phone after "Send to my phone" |
+| `tablet.html` | The product expert's tablet: consented summary, suggested conversation, masked number until booking |
 
-Start with `WALKTHROUGH.md` for the demo script, `CHANGELOG.md` for deviations and errors found, and `DATA_GAPS.md` for what is not yet verified.
+### Kiosk flow
+
+1. **Attract.**
+2. **Shortlist:** Hyryder, Creta, Seltos, Victoris or not sure.
+3. **Three needs:** monthly distance, top priority, riders.
+4. **Match.** The match changes with the answers:
+   - safety leads to the Victoris at Arena;
+   - performance leads to "a turbo petrol may suit you better";
+   - seven seats leads to "none of these seats seven".
+5. **Explore:**
+   - like-for-like comparison, with entry and top variants where both exist, and "the honest read";
+   - running-cost calculator;
+   - 12 sourced questions;
+   - the promises.
+6. **Hand-off:** consent, Weekend Ownership slot, Arena referral, QR.
+7. **Done.**
+
+The kiosk clears itself after 60 seconds untouched.
 
 ## Run it
 
-Needs Node 20 or later.
+It is a static site with no build step needed to view it. React is bundled in `js/` and fonts are self-hosted, so it works offline.
 
 ```bash
-npm install
+python3 -m http.server 8000   # then open http://localhost:8000
 ```
+
+Deploy it to Vercel, Netlify or GitHub Pages as a static site from the repo root.
+
+## How it is built
+
+- `src/*.dc.html` are the source screens, authored in a design canvas, and `src/canvas.json` is that canvas's layout.
+- `js/dc-lite.js` is a small runtime that renders those sources outside the canvas with React:
+  - `{{ }}` holes;
+  - `<sc-if>` and `<sc-for>`;
+  - event handlers;
+  - the `class Component extends DCLogic` logic.
+- `tools/build.py` turns each source into a root page. It swaps in the self-hosted fonts, local image paths and page links.
+
+After editing a source screen:
 
 ```bash
-npm run dev
+python3 tools/build.py
 ```
 
-Open `http://localhost:5173/demo`.
+## Data and honesty
 
-## Build and check
+- **Prices are ex-showroom Delhi, Aug–Oct 2026:**
+  - Grand Vitara: Cars24 variant price update, Aug 2026, with the top strong hybrid confirmed on CarDekho, Sep 2026.
+  - Hyryder, Victoris and Seltos: CarDekho Delhi price pages, Oct 2026.
+  - Creta: Autocar India, 12 Oct 2026.
+- **Efficiency** is the claimed ARAI figure.
+- **Petrol** is ₹102.12/l (The Hans India, 11 Oct 2026).
+- **Every source** is listed on the kiosk's Sources panel.
+- **Proposals:** the Higher Ground Promise (60% buyback at 3 years / 45,000 km), the Service Pledge and Weekend Ownership are programme proposals, labelled "Proposed" on screen.
+- **Tablet sessions** are illustrative samples. Nothing typed into the prototype leaves the browser.
+- **Photos:** the car photos are Maruti Suzuki images via CarDekho. The road scenes are AI-generated illustrations, not real locations.
 
-```bash
-npm run build
-```
+## Licences
 
-The build fails if any fact lacks a source, a date or a status; if anything references a fact that does not exist; if Hindi is missing a buyer-facing string; or if a digit is typed into copy or JSX outside a slot.
-
-```bash
-npm test
-```
-
-```bash
-npx playwright install chromium
-```
-
-```bash
-npm run e2e
-```
-
-`npm run e2e` builds nothing: run `npm run build` first. It starts the preview server itself. `npm run screenshots` re-captures every kiosk state in both skins and both languages and rebuilds the contact sheets in `screenshots/`.
-
-## Deploy to Vercel
-
-The app is a static Vite build. `vercel.json` sets the build command, the output folder and the rewrites that send every route to `index.html`.
-
-1. Push this repository to GitHub.
-2. In Vercel, import the repository. The framework preset "Vite" is detected; no environment variables are needed.
-3. Deploy, then open `/demo`.
-
-After deploying, scan the kiosk's QR code with a real phone to confirm `/m` opens: that only works from the deployed address.
-
-## How the numbers stay honest
-
-- Every figure on screen is rendered by one of four wrappers: `Fact` (a value in `facts.json`, tap for its source), `Calc` (a computed value, tap for the formula and inputs), `Sim` (simulated council data, tap for the seed) or `Ui` (a counter or the buyer's own input).
-- A missing value renders as a **Verify** chip. A value whose sources disagree carries a small flag.
-- Three checks enforce it: the build-time lint (`scripts/lint-numbers.ts`), the data check (`scripts/validate-data.ts`) and a browser audit that walks every text node on every kiosk state (`tests/e2e/helpers.ts`, `untracedNumbers`).
-
-## Refresh the data
-
-The JSON in `src/data/` is generated. Edit the sources in `data-src/` and rebuild.
-
-1. Prices, specs, ratings, fuel prices: edit `data-src/build-data.ts`. Each value takes a source object; update the `R` date at the top when you re-check.
-2. Questions and answers: edit `data-src/build-qa.ts`.
-3. Regenerate and check:
-
-```bash
-npm run data:build
-```
-
-```bash
-npm run data:check
-```
-
-```bash
-npm run data:docs
-```
-
-`data:docs` rewrites `SOURCES.md`, the table in `DATA_GAPS.md` and `HINDI_REVIEW.md`.
-
-If the petrol price changes, the three expected values in `tests/unit/domain.test.ts` ("the checks in the brief") change with it. Update them and note the old and new figures in `CHANGELOG.md`.
-
-To turn a Verify chip into a number, replace `gap('...')` with a real source in `build-data.ts` and give the fact a value.
-
-## Add a rival
-
-1. In `data-src/build-data.ts`, add a block to `rivals` modelled on the Creta: a price source, model facts (airbags, crash rating, boot, ground clearance, warranty) and its variants.
-2. Add its id to the `shortlist` lists at the bottom of the file for the channels that should offer it.
-3. Add a one-line neutral description to both copy files as `sl.<id>.desc`. No disparagement.
-4. Run the three data commands above, then `npm run build`.
-
-## Edit the Hindi
-
-- Interface strings: `src/data/copy.hi.json`. Keys match `copy.en.json`. Keep every `{...}` slot exactly as it is; the data check fails if English and Hindi cite different facts.
-- Answers and question variants: `data-src/build-qa.ts`, then `npm run data:build`.
-- `HINDI_REVIEW.md` lists every Hindi string beside its English for a native speaker. It has **not** been reviewed yet.
-- No digits in copy: write `{f:fact.id}` for a fact or `{n:1000}` for a unit base.
-
-## Car images
-
-Placeholders name the shot needed. See `IMAGES_NEEDED.md`. Drop `public/cars/<id>.webp` in and rebuild.
-
-## Live AI mode
-
-Not built in this version. The Q&A is a deterministic offline library (`src/domain/qa.ts`), which is what judges see. `CHANGELOG.md` explains why.
-
-## Architecture
-
-```
-data-src/        canonical data entry (TypeScript), generates src/data/*.json
-src/data/        facts, models, rivals, Q&A, copy (English, Hindi), zod schemas
-src/domain/      pure functions: calculators, recommend, compare, costs, qa, payload, profile, simulate
-src/state/       kiosk state machine (typed reducer + transition table), session bus
-src/ui/          Fact / Calc / Sim / Ui / Verify / Proposed, FixedStage, ImageSlot, styles
-src/surfaces/    kiosk, Phone, Expert, Council, Demo, About
-scripts/         data check, number lint, docs generator, contact sheets
-tests/unit/      calculators, engine (14 cases), comparison, Q&A matcher, payload, consent, state machine
-tests/e2e/       persona flows, idle wipe, consent, QR round trip, sync, audits, tours, screenshots
-```
-
-- **State**: the kiosk is a typed reducer with an explicit transition table (`src/state/kioskMachine.ts`). The whole session is one serialisable object, which is what makes the wipe, judge mode and the QR payload simple to prove.
-- **Sync**: surfaces share a record in `localStorage` and signal changes over `BroadcastChannel`. There is no server. The phone reads only its URL hash, which is why the QR path carries no personal data.
-- **Offline**: the service worker precaches the app, data and fonts.
-- **Kiosk hardening for a real device**: text selection and the context menu are disabled, a full-screen button is in the header, and a screen wake-lock is requested. On real hardware also run the browser in kiosk mode, disable pinch zoom at the OS level and set the device to relaunch the page on boot.
-
-## Measured
-
-Local preview build, Chromium, 12 Oct 2026: kiosk route JavaScript 205 KB gzipped (budget 300 KB); largest contentful paint about 0.4 s for both `/kiosk` and `/m`. Lighthouse itself would not launch in the build environment, so there are no Lighthouse scores: run it against the deployed URL.
+- React (MIT): `js/LICENSE-react.txt`.
+- Outfit and Source Sans 3 (SIL Open Font License): `assets/fonts/*/LICENSE.txt`.
