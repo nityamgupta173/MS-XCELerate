@@ -38,6 +38,12 @@ Not an official Maruti Suzuki product or screen.
 
 The kiosk clears itself after 60 seconds untouched.
 
+### Light and dark mode
+
+Every screen has a Light / Dark switch in its header (the kiosk, phone, tablet and landing page). Dark is the default, as on a showroom kiosk. The choice is remembered in the browser and carries across the screens; nothing else is stored. To open a screen in a given mode, add `?theme=light` or `?theme=dark` to its address, for example `kiosk.html?theme=light`.
+
+Colours live in CSS custom properties defined at the top of each source screen (`src/*.dc.html`), with a `:root[data-theme="light"]` block that overrides them.
+
 ## Run it
 
 It is a static site with no build step needed to view it. React is bundled in `js/` and fonts are self-hosted, so it works offline.

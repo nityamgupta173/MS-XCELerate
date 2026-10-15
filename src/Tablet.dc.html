@@ -11,60 +11,73 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <style>
+:root{color-scheme:dark;--bg:#0B1426;--surface:#121F38;--surface-2:#1A2A48;--sel:#1F3157;--line:#22324F;--border:#2A3B5C;--border-2:#3A4D72;--border-3:#5D6F92;--text:#F4F0E8;--text-2:#C9D1DF;--text-3:#AEB8CB;--muted:#9AA6BC;--muted-2:#8793AA;--muted-3:#7F8BA3;--blue:#9DB7E8;--accent:#D4B47C;--accent-hover:#E9D3A6;--on-accent:#0B1426;--overlay:rgba(5,10,20,0.92);--overlay-strong:rgba(5,10,20,0.94);--stage:#05080F;--chip-bg:rgba(18,31,56,0.85)}
+:root[data-theme="light"]{color-scheme:light;--bg:#F7F4EE;--surface:#FFFFFF;--surface-2:#EFE9DD;--sel:#F4E8CF;--line:#E2DACB;--border:#CDC3B0;--border-2:#B6AA93;--border-3:#968A74;--text:#141C2E;--text-2:#363F53;--text-3:#4F596D;--muted:#5E677A;--muted-2:#5F687B;--muted-3:#666F82;--blue:#3B5DA6;--accent:#8A672B;--accent-hover:#6B4F1F;--on-accent:#FFFFFF;--overlay:rgba(247,244,238,0.96);--overlay-strong:rgba(247,244,238,0.97);--stage:#E4DED2;--chip-bg:rgba(255,255,255,0.9)}
 body{margin:0}
-a{color:#D4B47C}a:hover{color:#E9D3A6}
+a{color:var(--accent)}a:hover{color:var(--accent-hover)}
 button{font-family:inherit;cursor:pointer}
 </style>
 </helmet>
-<div style="width: 1180px; height: 820px; box-sizing: border-box; background: #0B1426; color: #F4F0E8; font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+<div style="width: 1180px; height: 820px; box-sizing: border-box; background: var(--bg); color: var(--text); font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow: hidden">
 
-<header style="height: 72px; box-sizing: border-box; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #22324F">
+<header style="height: 72px; box-sizing: border-box; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line)">
 <div style="display: flex; align-items: baseline; gap: 16px">
 <span style="font-family: Outfit, sans-serif; font-weight: 600; font-size: 22px; letter-spacing: 0.3em; color: {{ accent }}">NEXA</span>
-<span style="font-size: 16px; color: #AEB8CB">Product expert · [OUTLET NAME]</span>
+<span style="font-size: 16px; color: var(--text-3)">Product expert · [OUTLET NAME]</span>
 </div>
+<div style="display: flex; align-items: center; gap: 20px">
+<button onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px">
+<sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</sc-if>
+<sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+</sc-if>
+{{ themeLabel }}
+</button>
 <a href="Main.dc.html" style="font-size: 15px">Back to the kiosk</a>
+</div>
 </header>
 
 <div style="flex: 1; min-height: 0; display: flex">
-<aside style="width: 330px; flex: none; box-sizing: border-box; padding: 24px 20px; border-right: 1px solid #22324F; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #AEB8CB">Kiosk sessions today (sample)</span>
+<aside style="width: 330px; flex: none; box-sizing: border-box; padding: 24px 20px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3)">Kiosk sessions today (sample)</span>
 <sc-for list="{{ sessions }}" as="ss" hint-placeholder-count="3">
-<button onClick="{{ ss.pick }}" aria-pressed="{{ ss.on }}" style="min-height: 76px; padding: 12px 16px; border-radius: 14px; border: 2px solid {{ ss.bd }}; background: {{ ss.bg }}; color: #F4F0E8; text-align: left; display: flex; flex-direction: column; gap: 4px">
+<button onClick="{{ ss.pick }}" aria-pressed="{{ ss.on }}" style="min-height: 76px; padding: 12px 16px; border-radius: 14px; border: 2px solid {{ ss.bd }}; background: {{ ss.bg }}; color: var(--text); text-align: left; display: flex; flex-direction: column; gap: 4px">
 <span style="font-size: 16px; font-weight: 700">{{ ss.time }} · {{ ss.kiosk }}</span>
-<span style="font-size: 14px; color: #C9D1DF">{{ ss.headline }}</span>
+<span style="font-size: 14px; color: var(--text-2)">{{ ss.headline }}</span>
 </button>
 </sc-for>
-<p style="margin: auto 0 0; font-size: 13px; line-height: 1.45; color: #9AA6BC">Only what the buyer chose to share. No phone number until the buyer confirms a booking.</p>
+<p style="margin: auto 0 0; font-size: 13px; line-height: 1.45; color: var(--muted)">Only what the buyer chose to share. No phone number until the buyer confirms a booking.</p>
 </aside>
 
 <main style="flex: 1; min-width: 0; box-sizing: border-box; padding: 24px 32px; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
 <div style="display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 14px; color: #AEB8CB">{{ cur.time }} · {{ cur.kiosk }}</span>
+<span style="font-size: 14px; color: var(--text-3)">{{ cur.time }} · {{ cur.kiosk }}</span>
 <h1 style="margin: 0; font-family: Outfit, sans-serif; font-size: 30px; font-weight: 600">{{ cur.headline }}</h1>
 </div>
-<span style="padding: 6px 14px; border-radius: 16px; background: #1A2A48; font-size: 14px; font-weight: 600; color: #C9D1DF">Shared with consent</span>
+<span style="padding: 6px 14px; border-radius: 16px; background: var(--surface-2); font-size: 14px; font-weight: 600; color: var(--text-2)">Shared with consent</span>
 </div>
 
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
-<section style="padding: 18px 20px; border-radius: 16px; background: #121F38; display: flex; flex-direction: column; gap: 10px">
-<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AEB8CB">What they told the kiosk</h2>
+<section style="padding: 18px 20px; border-radius: 16px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3)">What they told the kiosk</h2>
 <div style="display: grid; grid-template-columns: 130px 1fr; gap: 8px 12px; font-size: 16px">
-<span style="color: #AEB8CB">Considering</span><span>{{ cur.rival }}</span>
-<span style="color: #AEB8CB">Drives</span><span>{{ cur.km }}</span>
-<span style="color: #AEB8CB">Priority</span><span>{{ cur.priority }}</span>
-<span style="color: #AEB8CB">Riders</span><span>{{ cur.riders }}</span>
-<span style="color: #AEB8CB">Compared</span><span>{{ cur.compared }}</span>
+<span style="color: var(--text-3)">Considering</span><span>{{ cur.rival }}</span>
+<span style="color: var(--text-3)">Drives</span><span>{{ cur.km }}</span>
+<span style="color: var(--text-3)">Priority</span><span>{{ cur.priority }}</span>
+<span style="color: var(--text-3)">Riders</span><span>{{ cur.riders }}</span>
+<span style="color: var(--text-3)">Compared</span><span>{{ cur.compared }}</span>
 </div>
 </section>
-<section style="padding: 18px 20px; border-radius: 16px; background: #121F38; display: flex; flex-direction: column; gap: 10px">
-<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AEB8CB">Questions they asked</h2>
+<section style="padding: 18px 20px; border-radius: 16px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3)">Questions they asked</h2>
 <sc-for list="{{ cur.questions }}" as="qq" hint-placeholder-count="2">
-<span style="font-size: 16px; padding: 8px 12px; border-radius: 10px; background: #1A2A48">{{ qq }}</span>
+<span style="font-size: 16px; padding: 8px 12px; border-radius: 10px; background: var(--surface-2)">{{ qq }}</span>
 </sc-for>
 <sc-if value="{{ noQuestions }}" hint-placeholder-val="{{ false }}">
-<span style="font-size: 16px; color: #AEB8CB">None at the kiosk.</span>
+<span style="font-size: 16px; color: var(--text-3)">None at the kiosk.</span>
 </sc-if>
 </section>
 </div>
@@ -78,16 +91,16 @@ button{font-family:inherit;cursor:pointer}
 </ol>
 </section>
 
-<section style="padding: 16px 20px; border-radius: 16px; background: #121F38; display: flex; align-items: center; justify-content: space-between; gap: 20px">
+<section style="padding: 16px 20px; border-radius: 16px; background: var(--surface); display: flex; align-items: center; justify-content: space-between; gap: 20px">
 <div style="display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 16px; font-weight: 700">Weekend Ownership <span style="font-size: 12px; font-weight: 600; color: #C9D1DF; border: 1px solid #5D6F92; border-radius: 10px; padding: 1px 8px">Proposed</span></span>
-<span style="font-size: 15px; color: #C9D1DF">{{ slotText }}</span>
+<span style="font-size: 16px; font-weight: 700">Weekend Ownership <span style="font-size: 12px; font-weight: 600; color: var(--text-2); border: 1px solid var(--border-3); border-radius: 10px; padding: 1px 8px">Proposed</span></span>
+<span style="font-size: 15px; color: var(--text-2)">{{ slotText }}</span>
 </div>
 <sc-if value="{{ canConfirm }}" hint-placeholder-val="{{ true }}">
-<button onClick="{{ confirm }}" style="flex: none; height: 52px; padding: 0 24px; border: 0; border-radius: 26px; background: {{ accent }}; color: #0B1426; font-size: 16px; font-weight: 700">Confirm the slot</button>
+<button onClick="{{ confirm }}" style="flex: none; height: 52px; padding: 0 24px; border: 0; border-radius: 26px; background: {{ accent }}; color: var(--on-accent); font-size: 16px; font-weight: 700">Confirm the slot</button>
 </sc-if>
 </section>
-<p style="margin: 0; font-size: 12px; color: #8793AA">Concept prototype for XCELerate 2026 · sample sessions · programme features are proposals · not an official Maruti Suzuki screen</p>
+<p style="margin: 0; font-size: 12px; color: var(--muted-2)">Concept prototype for XCELerate 2026 · sample sessions · programme features are proposals · not an official Maruti Suzuki screen</p>
 </main>
 </div>
 </div>
@@ -96,11 +109,26 @@ button{font-family:inherit;cursor:pointer}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { sel: 0, confirmed: {} };
+    this.state = { sel: 0, confirmed: {}, theme: this.readTheme() };
+  }
+
+  componentDidMount() {
+    this.applyTheme(this.state.theme);
+  }
+
+  readTheme() {
+    let t = null;
+    try { t = new URLSearchParams(window.location.search).get('theme') || window.localStorage.getItem('msx-theme'); } catch (e) { t = null; }
+    return t === 'light' ? 'light' : 'dark';
+  }
+
+  applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    try { window.localStorage.setItem('msx-theme', t); } catch (e) { /* storage blocked: the theme still applies for this page */ }
   }
   renderVals() {
     const s = this.state;
-    const accent = this.props.accent ?? '#D4B47C';
+    const accent = ((!this.props.accent || String(this.props.accent).toUpperCase() === '#D4B47C') ? 'var(--accent)' : this.props.accent);
     const data = [
       {
         time: '11:42', kiosk: 'Kiosk 2', headline: 'Considering the Hyryder',
@@ -141,7 +169,7 @@ class Component extends DCLogic {
     ];
     const sessions = data.map((d, i) => ({
       time: d.time, kiosk: d.kiosk, headline: d.headline,
-      on: s.sel === i, bg: s.sel === i ? '#1F3157' : '#121F38', bd: s.sel === i ? accent : '#22324F',
+      on: s.sel === i, bg: s.sel === i ? 'var(--sel)' : 'var(--surface)', bd: s.sel === i ? accent : 'var(--line)',
       pick: () => this.setState({ sel: i })
     }));
     const cur = data[s.sel];
@@ -150,6 +178,11 @@ class Component extends DCLogic {
     if (cur.slot && !isConfirmed) slotText = 'Requested: ' + cur.slot + '. Buyer number hidden until you confirm.';
     if (cur.slot && isConfirmed) slotText = 'Confirmed: ' + cur.slot + '. Buyer notified by message; number now visible: [BUYER NUMBER].';
     return {
+      isLight: s.theme === 'light',
+      isDark: s.theme !== 'light',
+      themeLabel: s.theme === 'light' ? 'Dark' : 'Light',
+      themeAria: s.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
+      toggleTheme: () => { const t = this.state.theme === 'light' ? 'dark' : 'light'; this.applyTheme(t); this.setState({ theme: t }); },
       accent: accent,
       sessions: sessions,
       cur: cur,

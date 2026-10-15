@@ -28,14 +28,15 @@ SHELL = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
+<script>(function(){{var t=null;try{{t=new URLSearchParams(location.search).get("theme")||localStorage.getItem("msx-theme")}}catch(e){{}}if(t==="light")document.documentElement.setAttribute("data-theme","light")}})();</script>
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 {helmet}
 <style>
-html,body{{margin:0;height:100%;overflow:hidden;background:#05080F}}
+html,body{{margin:0;height:100%;overflow:hidden;background:var(--stage,#05080F)}}
 #dc-viewport{{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}}
 #dc-stage{{flex:none;transform-origin:center center}}
-#dc-all{{position:fixed;left:12px;bottom:12px;z-index:10;padding:6px 12px;border-radius:14px;background:rgba(18,31,56,.85);color:#C9D1DF;font:600 12px 'Source Sans 3',sans-serif;text-decoration:none}}
-#dc-all:hover{{color:#F4F0E8}}
+#dc-all{{position:fixed;left:12px;bottom:12px;z-index:10;padding:6px 12px;border-radius:14px;background:var(--chip-bg,rgba(18,31,56,.85));color:var(--text-2,#C9D1DF);border:1px solid var(--line,transparent);font:600 12px 'Source Sans 3',sans-serif;text-decoration:none}}
+#dc-all:hover{{color:var(--text,#F4F0E8)}}
 </style>
 </head>
 <body>

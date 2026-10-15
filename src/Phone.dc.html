@@ -11,73 +11,85 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <style>
+:root{color-scheme:dark;--bg:#0B1426;--surface:#121F38;--surface-2:#1A2A48;--sel:#1F3157;--line:#22324F;--border:#2A3B5C;--border-2:#3A4D72;--border-3:#5D6F92;--text:#F4F0E8;--text-2:#C9D1DF;--text-3:#AEB8CB;--muted:#9AA6BC;--muted-2:#8793AA;--muted-3:#7F8BA3;--blue:#9DB7E8;--accent:#D4B47C;--accent-hover:#E9D3A6;--on-accent:#0B1426;--overlay:rgba(5,10,20,0.92);--overlay-strong:rgba(5,10,20,0.94);--stage:#05080F;--chip-bg:rgba(18,31,56,0.85)}
+:root[data-theme="light"]{color-scheme:light;--bg:#F7F4EE;--surface:#FFFFFF;--surface-2:#EFE9DD;--sel:#F4E8CF;--line:#E2DACB;--border:#CDC3B0;--border-2:#B6AA93;--border-3:#968A74;--text:#141C2E;--text-2:#363F53;--text-3:#4F596D;--muted:#5E677A;--muted-2:#5F687B;--muted-3:#666F82;--blue:#3B5DA6;--accent:#8A672B;--accent-hover:#6B4F1F;--on-accent:#FFFFFF;--overlay:rgba(247,244,238,0.96);--overlay-strong:rgba(247,244,238,0.97);--stage:#E4DED2;--chip-bg:rgba(255,255,255,0.9)}
 body{margin:0}
-a{color:#D4B47C}a:hover{color:#E9D3A6}
+a{color:var(--accent)}a:hover{color:var(--accent-hover)}
 button{font-family:inherit;cursor:pointer}
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0B1426; color: #F4F0E8; font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow-y: auto">
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: var(--bg); color: var(--text); font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; overflow-y: auto">
 
-<header style="padding: 20px 20px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #22324F">
+<header style="padding: 20px 20px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line)">
 <span style="font-family: Outfit, sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.3em; color: {{ accent }}">NEXA</span>
-<span style="font-size: 13px; color: #AEB8CB">Saved from the showroom kiosk</span>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="font-size: 13px; color: var(--text-3)">Saved from the showroom kiosk</span>
+<button onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" style="flex: none; width: 36px; height: 36px; padding: 0; border-radius: 18px; border: 1px solid var(--border); background: transparent; color: var(--text); display: flex; align-items: center; justify-content: center">
+<sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</sc-if>
+<sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" style="flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+</sc-if>
+</button>
+</div>
 </header>
 
 <main style="padding: 20px; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <h1 style="margin: 0; font-family: Outfit, sans-serif; font-weight: 600; font-size: 26px; line-height: 1.15">Grand Vitara vs Hyryder</h1>
-<span style="font-size: 14px; color: #AEB8CB">Your comparison · strong hybrid · Delhi prices</span>
+<span style="font-size: 14px; color: var(--text-3)">Your comparison · strong hybrid · Delhi prices</span>
 </div>
 
-<section aria-label="Comparison" style="border-radius: 16px; background: #121F38; overflow: hidden">
-<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; background: #1A2A48; font-size: 13px; font-weight: 700">
+<section aria-label="Comparison" style="border-radius: 16px; background: var(--surface); overflow: hidden">
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; background: var(--surface-2); font-size: 13px; font-weight: 700">
 <span></span><span style="color: {{ accent }}">Grand Vitara</span><span>Hyryder</span>
 </div>
-<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
-<span style="color: #AEB8CB">Powertrain</span><span>Same 1.5 strong hybrid</span><span>Same 1.5 strong hybrid</span>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px">
+<span style="color: var(--text-3)">Powertrain</span><span>Same 1.5 strong hybrid</span><span>Same 1.5 strong hybrid</span>
 </div>
-<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
-<span style="color: #AEB8CB">Fuel / 1,000 km*</span><span>₹3,651</span><span>₹3,651</span>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px">
+<span style="color: var(--text-3)">Fuel / 1,000 km*</span><span>₹3,651</span><span>₹3,651</span>
 </div>
-<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
-<span style="color: #AEB8CB">Top strong hybrid</span><span style="font-weight: 700">₹19.62 lakh</span><span>₹19.99 lakh</span>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px">
+<span style="color: var(--text-3)">Top strong hybrid</span><span style="font-weight: 700">₹19.62 lakh</span><span>₹19.99 lakh</span>
 </div>
-<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
-<span style="color: #AEB8CB">Warranty</span><span>3 yr / 1 lakh km</span><span>3 yr / 1 lakh km</span>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px">
+<span style="color: var(--text-3)">Warranty</span><span>3 yr / 1 lakh km</span><span>3 yr / 1 lakh km</span>
 </div>
-<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid #22324F; font-size: 14px">
-<span style="color: #AEB8CB">Buyback</span><span style="font-weight: 700">60% at 3 yr</span><span>Check with dealer</span>
+<div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px">
+<span style="color: var(--text-3)">Buyback</span><span style="font-weight: 700">60% at 3 yr</span><span>Check with dealer</span>
 </div>
 </section>
-<p style="margin: -8px 0 0; font-size: 12px; line-height: 1.4; color: #9AA6BC">*Claimed 27.97 km/l at ₹102.12/l, Delhi, 11 Oct 2026. Owners commonly report 20 to 24 km/l.</p>
+<p style="margin: -8px 0 0; font-size: 12px; line-height: 1.4; color: var(--muted)">*Claimed 27.97 km/l at ₹102.12/l, Delhi, 11 Oct 2026. Owners commonly report 20 to 24 km/l.</p>
 
 <section style="display: flex; flex-direction: column; gap: 10px">
-<h2 style="margin: 0; font-family: Outfit, sans-serif; font-size: 18px; font-weight: 600">What NEXA promises <span style="font-family: 'Source Sans 3', sans-serif; font-size: 12px; font-weight: 600; color: #C9D1DF; border: 1px solid #5D6F92; border-radius: 10px; padding: 1px 8px; vertical-align: middle">Proposed</span></h2>
-<div style="padding: 14px 16px; border-radius: 14px; border: 1px solid #2A3B5C; display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-family: Outfit, sans-serif; font-size: 18px; font-weight: 600">What NEXA promises <span style="font-family: 'Source Sans 3', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-2); border: 1px solid var(--border-3); border-radius: 10px; padding: 1px 8px; vertical-align: middle">Proposed</span></h2>
+<div style="padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px">
 <span style="font-size: 15px; font-weight: 700">Higher Ground Promise</span>
-<span style="font-size: 14px; line-height: 1.4; color: #C9D1DF">A guaranteed buyback offer at 60% of ex-showroom at 3 years or 45,000 km, subject to an inspection.</span>
+<span style="font-size: 14px; line-height: 1.4; color: var(--text-2)">A guaranteed buyback offer at 60% of ex-showroom at 3 years or 45,000 km, subject to an inspection.</span>
 </div>
-<div style="padding: 14px 16px; border-radius: 14px; border: 1px solid #2A3B5C; display: flex; flex-direction: column; gap: 4px">
+<div style="padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px">
 <span style="font-size: 15px; font-weight: 700">Service Pledge</span>
-<span style="font-size: 14px; line-height: 1.4; color: #C9D1DF">If a fault is not fixed on the first visit, a replacement car until it is.</span>
+<span style="font-size: 14px; line-height: 1.4; color: var(--text-2)">If a fault is not fixed on the first visit, a replacement car until it is.</span>
 </div>
 </section>
 
 <sc-if value="{{ notBooked }}" hint-placeholder-val="{{ true }}">
-<button onClick="{{ book }}" style="height: 52px; border: 0; border-radius: 26px; background: {{ accent }}; color: #0B1426; font-size: 16px; font-weight: 700">Book Weekend Ownership (48 hours)</button>
+<button onClick="{{ book }}" style="height: 52px; border: 0; border-radius: 26px; background: {{ accent }}; color: var(--on-accent); font-size: 16px; font-weight: 700">Book Weekend Ownership (48 hours)</button>
 </sc-if>
 <sc-if value="{{ booked }}" hint-placeholder-val="{{ false }}">
-<div style="padding: 14px 16px; border-radius: 14px; background: #1A2A48; font-size: 14px; line-height: 1.4">Requested. The showroom will confirm your 48-hour slot by message.</div>
+<div style="padding: 14px 16px; border-radius: 14px; background: var(--surface-2); font-size: 14px; line-height: 1.4">Requested. The showroom will confirm your 48-hour slot by message.</div>
 </sc-if>
-<a href="#" style="height: 52px; border-radius: 26px; border: 2px solid #2A3B5C; color: #F4F0E8; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; font-weight: 600">
+<a href="#" style="height: 52px; border-radius: 26px; border: 2px solid var(--border); color: var(--text); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; font-weight: 600">
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"></path></svg>
 Ask on WhatsApp
 </a>
 
-<section style="padding: 14px 16px; border-radius: 14px; background: #121F38; display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 13px; line-height: 1.45; color: #C9D1DF">Kept for 90 days, then deleted automatically. Your number is shared with the showroom only when you book.</span>
+<section style="padding: 14px 16px; border-radius: 14px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; line-height: 1.45; color: var(--text-2)">Kept for 90 days, then deleted automatically. Your number is shared with the showroom only when you book.</span>
 <sc-if value="{{ notDeleted }}" hint-placeholder-val="{{ true }}">
-<button onClick="{{ del }}" style="align-self: flex-start; height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid #5D6F92; background: transparent; color: #F4F0E8; font-size: 14px; font-weight: 600">Delete my data now</button>
+<button onClick="{{ del }}" style="align-self: flex-start; height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid var(--border-3); background: transparent; color: var(--text); font-size: 14px; font-weight: 600">Delete my data now</button>
 </sc-if>
 <sc-if value="{{ deleted }}" hint-placeholder-val="{{ false }}">
 <span style="font-size: 14px; font-weight: 600; color: {{ accent }}">Deleted. This link will stop working.</span>
@@ -85,7 +97,7 @@ Ask on WhatsApp
 </section>
 
 <a href="Main.dc.html" style="font-size: 14px; text-align: center; padding: 12px 0">Back to the kiosk</a>
-<p style="margin: 0; font-size: 11px; line-height: 1.4; text-align: center; color: #8793AA">Concept prototype for XCELerate 2026 · not an official Maruti Suzuki screen</p>
+<p style="margin: 0; font-size: 11px; line-height: 1.4; text-align: center; color: var(--muted-2)">Concept prototype for XCELerate 2026 · not an official Maruti Suzuki screen</p>
 </main>
 </div>
 </x-dc>
@@ -93,12 +105,32 @@ Ask on WhatsApp
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { booked: false, deleted: false };
+    this.state = { booked: false, deleted: false, theme: this.readTheme() };
+  }
+
+  componentDidMount() {
+    this.applyTheme(this.state.theme);
+  }
+
+  readTheme() {
+    let t = null;
+    try { t = new URLSearchParams(window.location.search).get('theme') || window.localStorage.getItem('msx-theme'); } catch (e) { t = null; }
+    return t === 'light' ? 'light' : 'dark';
+  }
+
+  applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    try { window.localStorage.setItem('msx-theme', t); } catch (e) { /* storage blocked: the theme still applies for this page */ }
   }
   renderVals() {
     const s = this.state;
     return {
-      accent: this.props.accent ?? '#D4B47C',
+      isLight: s.theme === 'light',
+      isDark: s.theme !== 'light',
+      themeLabel: s.theme === 'light' ? 'Dark' : 'Light',
+      themeAria: s.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
+      toggleTheme: () => { const t = this.state.theme === 'light' ? 'dark' : 'light'; this.applyTheme(t); this.setState({ theme: t }); },
+      accent: ((!this.props.accent || String(this.props.accent).toUpperCase() === '#D4B47C') ? 'var(--accent)' : this.props.accent),
       booked: s.booked,
       notBooked: !s.booked,
       deleted: s.deleted,
